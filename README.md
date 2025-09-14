@@ -21,6 +21,6 @@ npm install
 npm run dev
 ```
 
-Access:
+## Access Points
 - Strapi Admin: http://localhost:1337/admin
 - Next.js App: http://localhost:3000
