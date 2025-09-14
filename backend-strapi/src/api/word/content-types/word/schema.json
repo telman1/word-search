@@ -1,0 +1,69 @@
+{
+  "kind": "collectionType",
+  "collectionName": "words",
+  "info": {
+    "singularName": "word",
+    "pluralName": "words",
+    "displayName": "Word",
+    "description": "Words with linguistic data"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "lemma": {
+      "type": "string",
+      "required": true
+    },
+    "lemma_part": {
+      "type": "string"
+    },
+    "affix": {
+      "type": "string"
+    },
+    "affix_number": {
+      "type": "string"
+    },
+    "affix_type": {
+      "type": "enumeration",
+      "enum": ["prefix", "suffix", "infix", "none"]
+    },
+    "root": {
+      "type": "string"
+    },
+    "root_number": {
+      "type": "string"
+    },
+    "stem": {
+      "type": "string"
+    },
+    "ordinal": {
+      "type": "string"
+    },
+    "part_of_speech": {
+      "type": "string"
+    },
+    "notes": {
+      "type": "richtext"
+    },
+    "language": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::language.language",
+      "inversedBy": "words"
+    },
+    "relations_from": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::relation.relation",
+      "mappedBy": "from_word"
+    },
+    "relations_to": {
+      "type": "relation",
+      "relation": "oneToMany",
+      "target": "api::relation.relation",
+      "mappedBy": "to_word"
+    }
+  }
+}
