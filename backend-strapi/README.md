@@ -1,61 +1,113 @@
-# 🚀 Getting started with Strapi
+# Word Search MVP - Backend (Strapi)
 
-Strapi comes with a full featured [Command Line Interface](https://docs.strapi.io/dev-docs/cli) (CLI) which lets you scaffold and manage your project in seconds.
+This is the Strapi backend for the Word Search MVP application.
 
-### `develop`
+## Setup Instructions
 
-Start your Strapi application with autoReload enabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-develop)
+### Prerequisites
+- Node.js 18+ 
+- Docker and Docker Compose
+- npm
 
+### Quick Start with Docker Compose
+
+1. **Start PostgreSQL and Strapi:**
+   ```bash
+   docker-compose up
+   ```
+
+2. **Access Strapi Admin:**
+   - Open http://localhost:1337/admin
+   - Create your admin account on first run
+   - The bootstrap script will automatically create sample Armenian words and relations
+
+### Manual Setup (Alternative)
+
+1. **Start PostgreSQL:**
+   ```bash
+   docker-compose up postgres -d
+   ```
+
+2. **Install dependencies:**
+   ```bash
+   npm install
+   ```
+
+3. **Start Strapi:**
+   ```bash
+   npm run develop
+   ```
+
+4. **Access Strapi Admin:**
+   - Open http://localhost:1337/admin
+   - Create your admin account
+
+## API Endpoints
+
+The following REST API endpoints are available:
+
+- `GET /api/languages` - List all languages
+- `GET /api/words` - List all words
+- `GET /api/words/:id` - Get specific word
+- `GET /api/words?filters[lemma][$contains]=տուն&populate=language,relations_from,relations_to` - Search words
+- `GET /api/relations` - List all relations
+
+### Example API Requests
+
+**Search for words containing "տուն":**
+```bash
+curl "http://localhost:1337/api/words?filters[lemma][$contains]=տուն&populate=language,relations_from,relations_to"
 ```
-npm run develop
-# or
-yarn develop
+
+**Get a specific word with all relations:**
+```bash
+curl "http://localhost:1337/api/words/1?populate=*"
 ```
 
-### `start`
+## Collection Types
 
-Start your Strapi application with autoReload disabled. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-start)
+### Language
+- `name` (string, required) - Language name (e.g., "Armenian")
+- `code` (string, required) - Language code (e.g., "hy")
 
-```
-npm run start
-# or
-yarn start
-```
+### Word
+- `lemma` (string, required) - The word form
+- `lemma_part` (string) - Part of lemma if needed
+- `affix` (string) - Affix information
+- `affix_number` (string) - Affix number
+- `affix_type` (enum) - prefix, suffix, infix, none
+- `root` (string) - Root form
+- `root_number` (string) - Root number
+- `stem` (string) - Stem form
+- `ordinal` (string) - Ordinal information
+- `part_of_speech` (string) - Part of speech
+- `notes` (richtext) - Additional notes
+- `language` (relation) - Associated language
 
-### `build`
+### Relation
+- `from_word` (relation) - Source word
+- `to_word` (relation) - Target word
+- `relation_type` (enum) - synonym, translation, stem, derived, related
+- `weight` (integer) - Relation weight for ranking
+- `comment` (string) - Additional comment
 
-Build your admin panel. [Learn more](https://docs.strapi.io/dev-docs/cli#strapi-build)
+## Sample Data
 
-```
-npm run build
-# or
-yarn build
-```
+The bootstrap script creates:
+- Armenian language (hy)
+- 8 sample Armenian words related to "տուն" (house)
+- 7 relations showing various linguistic relationships
 
-## ⚙️ Deployment
+## Development
 
-Strapi gives you many possible deployment options for your project including [Strapi Cloud](https://cloud.strapi.io). Browse the [deployment section of the documentation](https://docs.strapi.io/dev-docs/deployment) to find the best solution for your use case.
+- **Database:** PostgreSQL (configured in docker-compose.yml)
+- **Environment:** Development settings in .env
+- **Bootstrap:** Sample data is created automatically on first run
 
-```
-yarn strapi deploy
-```
+## Production Notes
 
-## 📚 Learn more
-
-- [Resource center](https://strapi.io/resource-center) - Strapi resource center.
-- [Strapi documentation](https://docs.strapi.io) - Official Strapi documentation.
-- [Strapi tutorials](https://strapi.io/tutorials) - List of tutorials made by the core team and the community.
-- [Strapi blog](https://strapi.io/blog) - Official Strapi blog containing articles made by the Strapi team and the community.
-- [Changelog](https://strapi.io/changelog) - Find out about the Strapi product updates, new features and general improvements.
-
-Feel free to check out the [Strapi GitHub repository](https://github.com/strapi/strapi). Your feedback and contributions are welcome!
-
-## ✨ Community
-
-- [Discord](https://discord.strapi.io) - Come chat with the Strapi community including the core team.
-- [Forum](https://forum.strapi.io/) - Place to discuss, ask questions and find answers, show your Strapi project and get feedback or just talk with other Community members.
-- [Awesome Strapi](https://github.com/strapi/awesome-strapi) - A curated list of awesome things related to Strapi.
-
----
-
-<sub>🤫 Psst! [Strapi is hiring](https://strapi.io/careers).</sub>
+For production deployment:
+1. Update .env with production database credentials
+2. Generate new secrets for APP_KEYS, API_TOKEN_SALT, etc.
+3. Set DATABASE_SSL=true for secure connections
+4. Configure proper CORS settings for your frontend domain
