@@ -1,0 +1,39 @@
+{
+  "kind": "collectionType",
+  "collectionName": "relations",
+  "info": {
+    "singularName": "relation",
+    "pluralName": "relations",
+    "displayName": "Relation",
+    "description": "Relations between words"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "from_word": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::word.word",
+      "inversedBy": "relations_from"
+    },
+    "to_word": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::word.word",
+      "inversedBy": "relations_to"
+    },
+    "relation_type": {
+      "type": "enumeration",
+      "enum": ["synonym", "translation", "stem", "derived", "related"],
+      "required": true
+    },
+    "weight": {
+      "type": "integer"
+    },
+    "comment": {
+      "type": "string"
+    }
+  }
+}
