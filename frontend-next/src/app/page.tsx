@@ -29,6 +29,12 @@ interface Word {
   }>
 }
 
+type Relation = {
+  type: string
+  word: string
+  id: number
+}
+
 export default function Home() {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<Word[]>([])
@@ -53,9 +59,12 @@ export default function Home() {
     setError('')
     
     try {
-      const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'}/api/words?filters[lemma][$contains]=${encodeURIComponent(searchQuery)}&populate=language,relations_from.to_word,relations_to.from_wordpopulate[language]=true&populate[relations_from][populate][to_word]=true&populate[relations_to][populate][from_word]=true`
-      )
+      const baseUrl = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'
+      const params = new URLSearchParams()
+      params.set('filters[lemma][$contains]', searchQuery)
+      params.set('populate', 'language,relations_from.to_word,relations_to.from_word')
+
+      const response = await fetch(`${baseUrl}/api/words?${params.toString()}`)
       
       if (!response.ok) {
         throw new Error('Failed to fetch words')
@@ -72,7 +81,7 @@ export default function Home() {
   }
 
   const getAllRelations = (word: Word) => {
-    const relations = []
+    const relations: Relation[] = []
     
     if (word.relations_from) {
       relations.push(...word.relations_from.map(rel => ({
@@ -122,7 +131,7 @@ export default function Home() {
               }
               acc[rel.type].push(rel)
               return acc
-            }, {} as Record<string, typeof relations>)
+            }, {} as Record<string, Relation[]>)
 
             return (
               <div key={word.id} className="result-item">
@@ -168,7 +177,7 @@ export default function Home() {
       )}
 
       {!loading && !error && query && results.length === 0 && (
-        <div className="loading">No words found for "{query}"</div>
+        <div className="loading">No words found for &quot;{query}&quot;</div>
       )}
     </div>
   )
