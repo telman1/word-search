@@ -54,7 +54,7 @@ export default function Home() {
     
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'}/api/words?filters[lemma][$contains]=${encodeURIComponent(searchQuery)}&populate=language,relations_from.to_word,relations_to.from_word`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'}/api/words?filters[lemma][$contains]=${encodeURIComponent(searchQuery)}&populate=language,relations_from.to_word,relations_to.from_wordpopulate[language]=true&populate[relations_from][populate][to_word]=true&populate[relations_to][populate][from_word]=true`
       )
       
       if (!response.ok) {
