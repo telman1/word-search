@@ -13,8 +13,7 @@
     "noEmitOnError": true,
     "noImplicitThis": true,
     "outDir": "dist",
-    "rootDir": ".",
-    "allowJs": true
+    "rootDir": "."
   },
   "include": [
     // Include root files
