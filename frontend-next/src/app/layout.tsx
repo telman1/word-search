@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import Link from 'next/link'
 import '../styles/globals.scss'
 
 export const metadata: Metadata = {
@@ -17,10 +18,10 @@ export default function RootLayout({
         <div className="container">
           <header className="header">
             <div className="header-content">
-              <a href="/" className="logo">Word Search</a>
+              <Link href="/" className="logo">Word Search</Link>
               <nav className="nav">
-                <a href="/">Search</a>
-                <a href="/about">About</a>
+                <Link href="/">Search</Link>
+                <Link href="/about">About</Link>
               </nav>
             </div>
           </header>

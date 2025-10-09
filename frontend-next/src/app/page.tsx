@@ -29,6 +29,12 @@ interface Word {
   }>
 }
 
+type Relation = {
+  type: string
+  word: string
+  id: number
+}
+
 export default function Home() {
   const [query, setQuery] = useState('')
   const [results, setResults] = useState<Word[]>([])
@@ -72,7 +78,7 @@ export default function Home() {
   }
 
   const getAllRelations = (word: Word) => {
-    const relations = []
+    const relations: Relation[] = []
     
     if (word.relations_from) {
       relations.push(...word.relations_from.map(rel => ({
@@ -122,7 +128,7 @@ export default function Home() {
               }
               acc[rel.type].push(rel)
               return acc
-            }, {} as Record<string, typeof relations>)
+            }, {} as Record<string, Relation[]>)
 
             return (
               <div key={word.id} className="result-item">
@@ -168,7 +174,7 @@ export default function Home() {
       )}
 
       {!loading && !error && query && results.length === 0 && (
-        <div className="loading">No words found for "{query}"</div>
+        <div className="loading">No words found for &quot;{query}&quot;</div>
       )}
     </div>
   )
