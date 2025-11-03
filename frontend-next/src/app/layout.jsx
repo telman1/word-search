@@ -1,16 +1,13 @@
-import type { Metadata } from 'next'
 import Link from 'next/link'
 import '../styles/globals.scss'
 
-export const metadata: Metadata = {
+export const metadata = {
   title: 'Word Search MVP',
   description: 'A word search application with linguistic relations',
 }
 
 export default function RootLayout({
   children,
-}: {
-  children: React.ReactNode
 }) {
   return (
     <html lang="en">
@@ -33,3 +30,5 @@ export default function RootLayout({
     </html>
   )
 }
+
+

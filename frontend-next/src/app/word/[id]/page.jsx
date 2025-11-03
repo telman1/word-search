@@ -4,58 +4,19 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 
-interface Word {
-  id: number
-  lemma: string
-  lemma_part?: string
-  affix?: string
-  affix_number?: string
-  affix_type?: string
-  root?: string
-  root_number?: string
-  stem?: string
-  ordinal?: string
-  part_of_speech?: string
-  notes?: string
-  language?: {
-    name: string
-    code: string
-  }
-  relations_from?: Array<{
-    id: number
-    relation_type: string
-    weight?: number
-    comment?: string
-    to_word: {
-      id: number
-      lemma: string
-    }
-  }>
-  relations_to?: Array<{
-    id: number
-    relation_type: string
-    weight?: number
-    comment?: string
-    from_word: {
-      id: number
-      lemma: string
-    }
-  }>
-}
-
 export default function WordDetail() {
   const params = useParams()
-  const [word, setWord] = useState<Word | null>(null)
+  const [word, setWord] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
 
   useEffect(() => {
     if (params.id) {
-      fetchWord(params.id as string)
+      fetchWord(params.id)
     }
   }, [params.id])
 
-  const fetchWord = async (id: string) => {
+  const fetchWord = async (id) => {
     setLoading(true)
     setError('')
     
@@ -78,7 +39,7 @@ export default function WordDetail() {
     }
   }
 
-  const getAllRelations = (word: Word) => {
+  const getAllRelations = (word) => {
     const relations = []
     
     if (word.relations_from) {
@@ -123,7 +84,7 @@ export default function WordDetail() {
     }
     acc[rel.type].push(rel)
     return acc
-  }, {} as Record<string, typeof relations>)
+  }, {})
 
   return (
     <div className="word-detail">
@@ -229,3 +190,5 @@ export default function WordDetail() {
     </div>
   )
 }
+
+

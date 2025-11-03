@@ -3,41 +3,9 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 
-interface Word {
-  id: number
-  lemma: string
-  part_of_speech?: string
-  language?: {
-    name: string
-    code: string
-  }
-  relations_from?: Array<{
-    id: number
-    relation_type: string
-    to_word: {
-      id: number
-      lemma: string
-    }
-  }>
-  relations_to?: Array<{
-    id: number
-    relation_type: string
-    from_word: {
-      id: number
-      lemma: string
-    }
-  }>
-}
-
-type Relation = {
-  type: string
-  word: string
-  id: number
-}
-
 export default function Home() {
   const [query, setQuery] = useState('')
-  const [results, setResults] = useState<Word[]>([])
+  const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
 
@@ -54,13 +22,13 @@ export default function Home() {
     return () => clearTimeout(timeoutId)
   }, [query])
 
-  const searchWords = async (searchQuery: string) => {
+  const searchWords = async (searchQuery) => {
     setLoading(true)
     setError('')
     
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'}/api/words?filters[lemma][$contains]=${encodeURIComponent(searchQuery)}&populate=language,relations_from.to_word,relations_to.from_word&populate[language]=true&populate[relations_from][populate][to_word]=true&populate[relations_to][populate][from_word]=true`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'}/api/words?filters[lemma][$contains]=${encodeURIComponent(searchQuery)}&populate=language,relations_from.to_word,relations_to.from_word`
       )
       
       if (!response.ok) {
@@ -77,8 +45,8 @@ export default function Home() {
     }
   }
 
-  const getAllRelations = (word: Word) => {
-    const relations: Relation[] = []
+  const getAllRelations = (word) => {
+    const relations = []
     
     if (word.relations_from) {
       relations.push(...word.relations_from.map(rel => ({
@@ -128,7 +96,7 @@ export default function Home() {
               }
               acc[rel.type].push(rel)
               return acc
-            }, {} as Record<string, Relation[]>)
+            }, {})
 
             return (
               <div key={word.id} className="result-item">
@@ -179,3 +147,5 @@ export default function Home() {
     </div>
   )
 }
+
+

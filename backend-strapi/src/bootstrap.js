@@ -1,5 +1,3 @@
-'use strict';
-
 /**
  * Bootstrap function that is called before the application gets started.
  * This gives you an opportunity to set up your data model,

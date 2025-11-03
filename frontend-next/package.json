@@ -3,12 +3,13 @@
   "version": "0.1.0",
   "private": true,
   "scripts": {
-    "dev": "next dev --turbopack",
+    "dev": "next dev",
     "build": "next build",
     "start": "next start",
     "lint": "eslint"
   },
   "dependencies": {
+    "@tailwindcss/postcss": "^4.1.13",
     "next": "15.5.3",
     "react": "19.1.0",
     "react-dom": "19.1.0",
@@ -16,14 +17,7 @@
   },
   "devDependencies": {
     "@eslint/eslintrc": "^3",
-    "@types/node": "^20",
-    "@types/react": "^19",
-    "@types/react-dom": "^19",
     "eslint": "^9",
-    "eslint-config-next": "15.5.3",
-    "typescript": "^5"
-  },
-  "engines": {
-    "node": ">=18.0.0"
+    "eslint-config-next": "15.5.3"
   }
 }
