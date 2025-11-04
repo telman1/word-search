@@ -28,7 +28,7 @@ export default function Home() {
     
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'}/api/words?filters[lemma][$contains]=${encodeURIComponent(searchQuery)}&populate=language,relations_from.to_word,relations_to.from_word`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'}/api/words?filters[lemma][$contains]=${encodeURIComponent(searchQuery)}&populate[language][fields][0]=name&populate[language][fields][1]=code&populate[relations_from][fields][0]=relation_type&populate[relations_from][fields][1]=id&populate[relations_from][populate][to_word][fields][0]=id&populate[relations_from][populate][to_word][fields][1]=lemma&populate[relations_to][fields][0]=relation_type&populate[relations_to][fields][1]=id&populate[relations_to][populate][from_word][fields][0]=id&populate[relations_to][populate][from_word][fields][1]=lemma`
       )
       
       if (!response.ok) {
