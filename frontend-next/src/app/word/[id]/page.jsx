@@ -22,7 +22,7 @@ export default function WordDetail() {
     
     try {
       const response = await fetch(
-        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'}/api/words/${id}?populate=*`
+        `${process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'}/api/words/${id}?populate[author][fields][0]=name&populate[translator][fields][0]=name&populate[book][fields][0]=title&populate[connections][fields][0]=id&populate[connections][fields][1]=originalWord&populate[connections][fields][2]=armenianWord`
       )
       
       if (!response.ok) {
@@ -39,32 +39,6 @@ export default function WordDetail() {
     }
   }
 
-  const getAllRelations = (word) => {
-    const relations = []
-    
-    if (word.relations_from) {
-      relations.push(...word.relations_from.map(rel => ({
-        type: rel.relation_type,
-        word: rel.to_word.lemma,
-        id: rel.to_word.id,
-        weight: rel.weight,
-        comment: rel.comment
-      })))
-    }
-    
-    if (word.relations_to) {
-      relations.push(...word.relations_to.map(rel => ({
-        type: rel.relation_type,
-        word: rel.from_word.lemma,
-        id: rel.from_word.id,
-        weight: rel.weight,
-        comment: rel.comment
-      })))
-    }
-    
-    return relations
-  }
-
   if (loading) {
     return <div className="loading">Loading word...</div>
   }
@@ -77,108 +51,69 @@ export default function WordDetail() {
     return <div className="error">Word not found</div>
   }
 
-  const relations = getAllRelations(word)
-  const groupedRelations = relations.reduce((acc, rel) => {
-    if (!acc[rel.type]) {
-      acc[rel.type] = []
-    }
-    acc[rel.type].push(rel)
-    return acc
-  }, {})
-
   return (
     <div className="word-detail">
       <div className="word-header">
-        <h1 className="lemma">{word.lemma}</h1>
-        {word.language && (
-          <div className="language">{word.language.name}</div>
+        <h1 className="original-word">{word.originalWord}</h1>
+        {word.armenianWord && (
+          <h2 className="armenian-word">{word.armenianWord}</h2>
         )}
-        {word.part_of_speech && (
-          <span className="part-of-speech">{word.part_of_speech}</span>
+        {word.originalLanguage && (
+          <div className="language">{word.originalLanguage}</div>
         )}
       </div>
 
       <div className="word-info">
         <div className="info-grid">
-          {word.lemma_part && (
+          {word.book && (
             <div className="info-item">
-              <div className="label">Lemma Part:</div>
-              <div className="value">{word.lemma_part}</div>
+              <div className="label">Book:</div>
+              <div className="value">{word.book.title}</div>
             </div>
           )}
-          {word.affix && (
+          {word.author && (
             <div className="info-item">
-              <div className="label">Affix:</div>
-              <div className="value">{word.affix}</div>
+              <div className="label">Author:</div>
+              <div className="value">{word.author.name}</div>
             </div>
           )}
-          {word.affix_number && (
+          {word.translator && (
             <div className="info-item">
-              <div className="label">Affix Number:</div>
-              <div className="value">{word.affix_number}</div>
-            </div>
-          )}
-          {word.affix_type && (
-            <div className="info-item">
-              <div className="label">Affix Type:</div>
-              <div className="value">{word.affix_type}</div>
-            </div>
-          )}
-          {word.root && (
-            <div className="info-item">
-              <div className="label">Root:</div>
-              <div className="value">{word.root}</div>
-            </div>
-          )}
-          {word.root_number && (
-            <div className="info-item">
-              <div className="label">Root Number:</div>
-              <div className="value">{word.root_number}</div>
-            </div>
-          )}
-          {word.stem && (
-            <div className="info-item">
-              <div className="label">Stem:</div>
-              <div className="value">{word.stem}</div>
-            </div>
-          )}
-          {word.ordinal && (
-            <div className="info-item">
-              <div className="label">Ordinal:</div>
-              <div className="value">{word.ordinal}</div>
+              <div className="label">Translator:</div>
+              <div className="value">{word.translator.name}</div>
             </div>
           )}
         </div>
         
-        {word.notes && (
+        {word.originalExampleSentence && (
           <div className="info-item" style={{ marginTop: '1rem' }}>
-            <div className="label">Notes:</div>
-            <div className="value" dangerouslySetInnerHTML={{ __html: word.notes }} />
+            <div className="label">Original Example Sentence:</div>
+            <div className="value">{word.originalExampleSentence}</div>
+          </div>
+        )}
+        
+        {word.armenianExampleSentence && (
+          <div className="info-item" style={{ marginTop: '1rem' }}>
+            <div className="label">Armenian Example Sentence:</div>
+            <div className="value">{word.armenianExampleSentence}</div>
           </div>
         )}
       </div>
 
-      {Object.keys(groupedRelations).length > 0 && (
-        <div className="relations-section">
-          <h2 className="section-title">Relations</h2>
-          {Object.entries(groupedRelations).map(([type, rels]) => (
-            <div key={type} className="relation-group">
-              <div className="relation-type">{type}</div>
-              <div className="related-words">
-                {rels.map((rel) => (
-                  <Link
-                    key={rel.id}
-                    href={`/word/${rel.id}`}
-                    className="related-word"
-                    title={rel.comment || undefined}
-                  >
-                    {rel.word}
-                    {rel.weight && ` (${rel.weight})`}
-                  </Link>
-                ))}
-              </div>
-            </div>
-          ))}
+      {word.connections && word.connections.length > 0 && (
+        <div className="connections-section">
+          <h2 className="section-title">Connected Words</h2>
+          <div className="connected-words">
+            {word.connections.map((conn) => (
+              <Link
+                key={conn.id}
+                href={`/word/${conn.id}`}
+                className="connected-word"
+              >
+                {conn.armenianWord || conn.originalWord}
+              </Link>
+            ))}
+          </div>
         </div>
       )}
 
@@ -190,5 +125,3 @@ export default function WordDetail() {
     </div>
   )
 }
-
-

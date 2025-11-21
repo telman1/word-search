@@ -5,67 +5,75 @@
  */
 
 module.exports = async () => {
-  // Check if we already have data
-  const languageCount = await strapi.entityService.count('api::language.language');
+  // Check if we already have words with the new schema
+  const wordCount = await strapi.entityService.count('api::word.word', {
+    filters: {
+      originalWord: {
+        $notNull: true
+      }
+    }
+  });
   
-  if (languageCount > 0) {
+  if (wordCount > 0) {
     console.log('Data already exists, skipping bootstrap...');
     return;
   }
 
   console.log('Bootstrapping sample data...');
 
-  // Create Armenian language
-  const armenianLanguage = await strapi.entityService.create('api::language.language', {
+  // Create sample Author
+  const author = await strapi.entityService.create('api::author.author', {
     data: {
-      name: 'Armenian',
-      code: 'hy'
+      name: 'Sample Author'
     }
   });
+  console.log('Created author:', author.id);
 
-  console.log('Created Armenian language:', armenianLanguage.id);
+  // Create sample Translator
+  const translator = await strapi.entityService.create('api::translator.translator', {
+    data: {
+      name: 'Sample Translator'
+    }
+  });
+  console.log('Created translator:', translator.id);
 
-  // Sample Armenian words
+  // Create sample Book
+  const book = await strapi.entityService.create('api::book.book', {
+    data: {
+      title: 'Sample Book'
+    }
+  });
+  console.log('Created book:', book.id);
+
+  // Sample words with new schema
   const words = [
     {
-      lemma: 'տուն',
-      part_of_speech: 'noun',
-      notes: 'A dwelling place, home'
+      originalWord: 'house',
+      originalLanguage: 'English',
+      armenianWord: 'տուն',
+      originalExampleSentence: 'I live in a beautiful house.',
+      armenianExampleSentence: 'Ես ապրում եմ գեղեցիկ տան մեջ:'
     },
     {
-      lemma: 'տան',
-      part_of_speech: 'noun',
-      notes: 'Genitive form of տուն'
+      originalWord: 'home',
+      originalLanguage: 'English',
+      armenianWord: 'տուն',
+      originalExampleSentence: 'Welcome home!',
+      armenianExampleSentence: 'Բարի վերադարձ տուն:'
     },
     {
-      lemma: 'տանը',
-      part_of_speech: 'noun',
-      notes: 'Definite form of տան'
+      originalWord: 'дом',
+      originalLanguage: 'Russian',
+      armenianWord: 'տուն',
+      originalExampleSentence: 'Это мой дом.',
+      armenianExampleSentence: 'Սա իմ տունն է:'
     },
     {
-      lemma: 'տներ',
-      part_of_speech: 'noun',
-      notes: 'Plural form of տուն'
-    },
-    {
-      lemma: 'տներում',
-      part_of_speech: 'noun',
-      notes: 'Locative plural form of տուն'
-    },
-    {
-      lemma: 'տնակ',
-      part_of_speech: 'noun',
-      notes: 'Diminutive form of տուն'
-    },
-    {
-      lemma: 'տնային',
-      part_of_speech: 'adjective',
-      notes: 'Adjective form of տուն'
-    },
-    {
-      lemma: 'տնակային',
-      part_of_speech: 'adjective',
-      notes: 'Adjective form of տնակ'
+      originalWord: 'maison',
+      originalLanguage: 'French',
+      armenianWord: 'տուն',
+      originalExampleSentence: 'C\'est une grande maison.',
+      armenianExampleSentence: 'Սա մեծ տուն է:'
     }
   ];
 
@@ -75,64 +83,43 @@ module.exports = async () => {
     const word = await strapi.entityService.create('api::word.word', {
       data: {
         ...wordData,
-        language: armenianLanguage.id
+        author: author.id,
+        translator: translator.id,
+        book: book.id
       }
     });
     createdWords.push(word);
-    console.log('Created word:', word.lemma);
+    console.log('Created word:', word.originalWord, '->', word.armenianWord);
   }
 
-  // Create relations
-  const relations = [
+  // Create connections between words that represent the same concept
+  // All these words mean "house/home" in different languages
+  const connections = [
     {
-      from_word: createdWords[0].id, // տուն
-      to_word: createdWords[1].id,  // տան
-      relation_type: 'stem',
-      comment: 'Genitive form'
+      wordId: createdWords[0].id,
+      connectedWordIds: [createdWords[1].id, createdWords[2].id, createdWords[3].id]
     },
     {
-      from_word: createdWords[0].id, // տուն
-      to_word: createdWords[2].id,  // տանը
-      relation_type: 'stem',
-      comment: 'Definite genitive form'
+      wordId: createdWords[1].id,
+      connectedWordIds: [createdWords[0].id, createdWords[2].id, createdWords[3].id]
     },
     {
-      from_word: createdWords[0].id, // տուն
-      to_word: createdWords[3].id,  // տներ
-      relation_type: 'stem',
-      comment: 'Plural form'
+      wordId: createdWords[2].id,
+      connectedWordIds: [createdWords[0].id, createdWords[1].id, createdWords[3].id]
     },
     {
-      from_word: createdWords[0].id, // տուն
-      to_word: createdWords[4].id,  // տներում
-      relation_type: 'stem',
-      comment: 'Locative plural form'
-    },
-    {
-      from_word: createdWords[0].id, // տուն
-      to_word: createdWords[5].id,  // տնակ
-      relation_type: 'derived',
-      comment: 'Diminutive form'
-    },
-    {
-      from_word: createdWords[0].id, // տուն
-      to_word: createdWords[6].id,  // տնային
-      relation_type: 'derived',
-      comment: 'Adjective form'
-    },
-    {
-      from_word: createdWords[5].id, // տնակ
-      to_word: createdWords[7].id,  // տնակային
-      relation_type: 'derived',
-      comment: 'Adjective form of diminutive'
+      wordId: createdWords[3].id,
+      connectedWordIds: [createdWords[0].id, createdWords[1].id, createdWords[2].id]
     }
   ];
 
-  for (const relationData of relations) {
-    const relation = await strapi.entityService.create('api::relation.relation', {
-      data: relationData
+  for (const connection of connections) {
+    await strapi.entityService.update('api::word.word', connection.wordId, {
+      data: {
+        connections: connection.connectedWordIds
+      }
     });
-    console.log('Created relation:', relation.id);
+    console.log('Created connections for word:', connection.wordId);
   }
 
   console.log('Bootstrap completed successfully!');

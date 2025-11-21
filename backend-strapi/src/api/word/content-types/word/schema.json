@@ -12,58 +12,43 @@
   },
   "pluginOptions": {},
   "attributes": {
-    "lemma": {
+    "originalWord": {
       "type": "string",
       "required": true
     },
-    "lemma_part": {
-      "type": "string"
+    "originalLanguage": {
+      "type": "string",
+      "required": true
     },
-    "affix": {
-      "type": "string"
+    "armenianWord": {
+      "type": "string",
+      "required": true
     },
-    "affix_number": {
-      "type": "string"
+    "originalExampleSentence": {
+      "type": "text"
     },
-    "affix_type": {
-      "type": "enumeration",
-      "enum": ["prefix", "suffix", "infix", "none"]
+    "armenianExampleSentence": {
+      "type": "text"
     },
-    "root": {
-      "type": "string"
-    },
-    "root_number": {
-      "type": "string"
-    },
-    "stem": {
-      "type": "string"
-    },
-    "ordinal": {
-      "type": "string"
-    },
-    "part_of_speech": {
-      "type": "string"
-    },
-    "notes": {
-      "type": "richtext"
-    },
-    "language": {
+    "author": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::language.language",
-      "inversedBy": "words"
+      "target": "api::author.author"
     },
-    "relations_from": {
+    "translator": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::relation.relation",
-      "mappedBy": "from_word"
+      "relation": "manyToOne",
+      "target": "api::translator.translator"
     },
-    "relations_to": {
+    "book": {
       "type": "relation",
-      "relation": "oneToMany",
-      "target": "api::relation.relation",
-      "mappedBy": "to_word"
+      "relation": "manyToOne",
+      "target": "api::book.book"
+    },
+    "connections": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::word.word"
     }
   }
 }

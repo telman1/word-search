@@ -15,11 +15,11 @@ export default function RootLayout({
         <div className="container">
           <header className="header">
             <div className="header-content">
-              <Link href="/" className="logo">Word Search</Link>
-              <nav className="nav">
-                <Link href="/">Search</Link>
-                <Link href="/about">About</Link>
-              </nav>
+              <Link href="/" className="logo">Էլեկտրոնային բառարան</Link>
+              {/*<nav className="nav">*/}
+              {/*  <Link href="/">Search</Link>*/}
+              {/*  <Link href="/about">About</Link>*/}
+              {/*</nav>*/}
             </div>
           </header>
           <main>

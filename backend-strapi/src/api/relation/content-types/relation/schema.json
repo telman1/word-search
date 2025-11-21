@@ -15,14 +15,12 @@
     "from_word": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::word.word",
-      "inversedBy": "relations_from"
+      "target": "api::word.word"
     },
     "to_word": {
       "type": "relation",
       "relation": "manyToOne",
-      "target": "api::word.word",
-      "inversedBy": "relations_to"
+      "target": "api::word.word"
     },
     "relation_type": {
       "type": "enumeration",

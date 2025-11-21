@@ -1,0 +1,21 @@
+{
+  "kind": "collectionType",
+  "collectionName": "translators",
+  "info": {
+    "singularName": "translator",
+    "pluralName": "translators",
+    "displayName": "Translator",
+    "description": "Translators of books"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "name": {
+      "type": "string",
+      "required": true
+    }
+  }
+}
+
