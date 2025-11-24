@@ -33,6 +33,8 @@ body {
     display: flex;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: wrap;
+    gap: 1rem;
   }
 
   .logo {
@@ -110,10 +112,71 @@ body {
       margin-bottom: 0.5rem;
     }
 
+    .word-display {
+      margin-bottom: 0.5rem;
+      
+      a {
+        text-decoration: none;
+      }
+    }
+
+    .original-word {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 0.25rem;
+    }
+
+    .armenian-word {
+      font-size: 1.1rem;
+      color: #475569;
+      font-style: italic;
+    }
+
     .language {
       color: #64748b;
       font-size: 0.9rem;
       margin-bottom: 0.5rem;
+    }
+
+    .book, .author, .translator {
+      color: #64748b;
+      font-size: 0.9rem;
+      margin-bottom: 0.5rem;
+    }
+
+    .connections {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #e2e8f0;
+    }
+
+    .connection-type {
+      font-weight: bold;
+      color: #374151;
+      margin-bottom: 0.5rem;
+      font-size: 0.9rem;
+    }
+
+    .connected-words {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .connected-word {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      text-decoration: none;
+      transition: background-color 0.2s;
+      display: inline-block;
+
+      &:hover {
+        background: #e2e8f0;
+      }
     }
 
     .part-of-speech {
@@ -168,6 +231,20 @@ body {
   .word-header {
     margin-bottom: 2rem;
 
+    .original-word {
+      font-size: 2rem;
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 0.5rem;
+    }
+
+    .armenian-word {
+      font-size: 1.5rem;
+      color: #475569;
+      font-style: italic;
+      margin-bottom: 0.5rem;
+    }
+
     .lemma {
       font-size: 2rem;
       font-weight: bold;
@@ -209,6 +286,40 @@ body {
         .value {
           color: #6b7280;
         }
+      }
+    }
+  }
+
+  .connections-section {
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 2px solid #e2e8f0;
+
+    .section-title {
+      font-size: 1.3rem;
+      font-weight: bold;
+      color: #1e293b;
+      margin-bottom: 1rem;
+      padding-bottom: 0.5rem;
+      border-bottom: 2px solid #e2e8f0;
+    }
+
+    .connected-words {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+    }
+
+    .connected-word {
+      background: #f1f5f9;
+      color: #475569;
+      padding: 0.5rem 1rem;
+      border-radius: 6px;
+      text-decoration: none;
+      transition: background-color 0.2s;
+
+      &:hover {
+        background: #e2e8f0;
       }
     }
   }

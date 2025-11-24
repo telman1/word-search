@@ -1,5 +1,6 @@
-import Link from 'next/link'
 import '../styles/globals.scss'
+import { LanguageProvider } from '../contexts/LanguageContext'
+import Header from '../components/Header'
 
 export const metadata = {
   title: 'Word Search MVP',
@@ -12,20 +13,14 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body>
-        <div className="container">
-          <header className="header">
-            <div className="header-content">
-              <Link href="/" className="logo">Էլեկտրոնային բառարան</Link>
-              {/*<nav className="nav">*/}
-              {/*  <Link href="/">Search</Link>*/}
-              {/*  <Link href="/about">About</Link>*/}
-              {/*</nav>*/}
-            </div>
-          </header>
-          <main>
-            {children}
-          </main>
-        </div>
+        <LanguageProvider>
+          <div className="container">
+            <Header />
+            <main>
+              {children}
+            </main>
+          </div>
+        </LanguageProvider>
       </body>
     </html>
   )

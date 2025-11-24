@@ -2,8 +2,10 @@
 
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
+import { useLanguage } from '../contexts/LanguageContext'
 
 export default function Home() {
+  const { t } = useLanguage()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
@@ -39,7 +41,7 @@ export default function Home() {
       const data = await response.json()
       setResults(data.data || [])
     } catch (err) {
-      setError('Error searching words. Please try again.')
+      setError(t('home.errorSearching'))
       console.error('Search error:', err)
     } finally {
       setLoading(false)
@@ -63,15 +65,12 @@ export default function Home() {
   return (
     <div>
       <div className="search-container">
-        {/*<h1 style={{ marginBottom: '1rem', fontSize: '1.8rem', color: '#1e293b' }}>*/}
-        {/*  Էլեկտրոնային բառարան*/}
-        {/*</h1>*/}
         <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1rem', color: '#1e293b' }}>
-          Որոնում
+          {t('common.searchLabel')}
         </label>
         <input
           type="text"
-          placeholder="search..."
+          placeholder={t('common.searchPlaceholder')}
           value={query}
           onChange={(e) => setQuery(e.target.value)}
           className="search-input"
@@ -80,7 +79,7 @@ export default function Home() {
 
       {error && <div className="error">{error}</div>}
 
-      {loading && <div className="loading">Searching...</div>}
+      {loading && <div className="loading">{t('common.searching')}</div>}
 
       {results.length > 0 && (
         <div className="results-container">
@@ -101,18 +100,18 @@ export default function Home() {
                   <div className="language">{word.originalLanguage}</div>
                 )}
                 {word.book && (
-                  <div className="book">Book: {word.book.title}</div>
+                  <div className="book">{t('home.book')}: {word.book.title}</div>
                 )}
                 {word.author && (
-                  <div className="author">Author: {word.author.name}</div>
+                  <div className="author">{t('home.author')}: {word.author.name}</div>
                 )}
                 {word.translator && (
-                  <div className="translator">Translator: {word.translator.name}</div>
+                  <div className="translator">{t('home.translator')}: {word.translator.name}</div>
                 )}
                 
                 {connections.length > 0 && (
                   <div className="connections">
-                    <div className="connection-type">Connected words:</div>
+                    <div className="connection-type">{t('home.connectedWords')}</div>
                     <div className="connected-words">
                       {connections.slice(0, 5).map((conn) => (
                         <Link
@@ -124,7 +123,7 @@ export default function Home() {
                         </Link>
                       ))}
                       {connections.length > 5 && (
-                        <span className="connected-word">+{connections.length - 5} more</span>
+                        <span className="connected-word">+{connections.length - 5} {t('home.more')}</span>
                       )}
                     </div>
                   </div>
@@ -136,7 +135,7 @@ export default function Home() {
       )}
 
       {!loading && !error && query && results.length === 0 && (
-        <div className="loading">No words found for &quot;{query}&quot;</div>
+        <div className="loading">{t('common.noResults')} &quot;{query}&quot;</div>
       )}
     </div>
   )

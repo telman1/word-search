@@ -3,8 +3,10 @@
 import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
+import { useLanguage } from '../../../contexts/LanguageContext'
 
 export default function WordDetail() {
+  const { t } = useLanguage()
   const params = useParams()
   const [word, setWord] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -32,7 +34,7 @@ export default function WordDetail() {
       const data = await response.json()
       setWord(data.data)
     } catch (err) {
-      setError('Error loading word. Please try again.')
+      setError(t('word.errorLoading'))
       console.error('Word fetch error:', err)
     } finally {
       setLoading(false)
@@ -40,7 +42,7 @@ export default function WordDetail() {
   }
 
   if (loading) {
-    return <div className="loading">Loading word...</div>
+    return <div className="loading">{t('word.loading')}</div>
   }
 
   if (error) {
@@ -48,7 +50,7 @@ export default function WordDetail() {
   }
 
   if (!word) {
-    return <div className="error">Word not found</div>
+    return <div className="error">{t('word.notFound')}</div>
   }
 
   return (
@@ -67,19 +69,19 @@ export default function WordDetail() {
         <div className="info-grid">
           {word.book && (
             <div className="info-item">
-              <div className="label">Book:</div>
+              <div className="label">{t('word.book')}</div>
               <div className="value">{word.book.title}</div>
             </div>
           )}
           {word.author && (
             <div className="info-item">
-              <div className="label">Author:</div>
+              <div className="label">{t('word.author')}</div>
               <div className="value">{word.author.name}</div>
             </div>
           )}
           {word.translator && (
             <div className="info-item">
-              <div className="label">Translator:</div>
+              <div className="label">{t('word.translator')}</div>
               <div className="value">{word.translator.name}</div>
             </div>
           )}
@@ -87,14 +89,14 @@ export default function WordDetail() {
         
         {word.originalExampleSentence && (
           <div className="info-item" style={{ marginTop: '1rem' }}>
-            <div className="label">Original Example Sentence:</div>
+            <div className="label">{t('word.originalExample')}</div>
             <div className="value">{word.originalExampleSentence}</div>
           </div>
         )}
         
         {word.armenianExampleSentence && (
           <div className="info-item" style={{ marginTop: '1rem' }}>
-            <div className="label">Armenian Example Sentence:</div>
+            <div className="label">{t('word.armenianExample')}</div>
             <div className="value">{word.armenianExampleSentence}</div>
           </div>
         )}
@@ -102,7 +104,7 @@ export default function WordDetail() {
 
       {word.connections && word.connections.length > 0 && (
         <div className="connections-section">
-          <h2 className="section-title">Connected Words</h2>
+          <h2 className="section-title">{t('word.connectedWords')}</h2>
           <div className="connected-words">
             {word.connections.map((conn) => (
               <Link
@@ -119,7 +121,7 @@ export default function WordDetail() {
 
       <div style={{ marginTop: '2rem', textAlign: 'center' }}>
         <Link href="/" style={{ color: '#2563eb', textDecoration: 'none' }}>
-          ← Back to Search
+          {t('common.backToSearch')}
         </Link>
       </div>
     </div>

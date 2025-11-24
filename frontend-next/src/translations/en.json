@@ -1,0 +1,75 @@
+{
+  "common": {
+    "search": "Search",
+    "about": "About",
+    "loading": "Loading...",
+    "error": "Error",
+    "backToSearch": "← Back to Search",
+    "noResults": "No words found for",
+    "searching": "Searching...",
+    "searchPlaceholder": "search...",
+    "searchLabel": "Search"
+  },
+  "home": {
+    "title": "Electronic Dictionary",
+    "errorSearching": "Error searching words. Please try again.",
+    "book": "Book",
+    "author": "Author",
+    "translator": "Translator",
+    "connectedWords": "Connected words:",
+    "more": "more"
+  },
+  "about": {
+    "title": "Electronic Dictionary",
+    "subtitle": "Electronic Dictionary and Word Search Application",
+    "intro": {
+      "title": "Electronic Dictionary",
+      "text": "is an electronic database that allows you to search and explore words, their translations, linguistic relations, and connections through an intuitive search interface."
+    },
+    "project": {
+      "title": "About the Project",
+      "text": "This project provides a comprehensive platform for searching words, viewing their translations, and understanding their relationships within the linguistic database. The database contains words with their original and Armenian translations, along with connections to related words, authors, translators, and source materials."
+    },
+    "goals": {
+      "title": "Project Goals",
+      "text": "The goal of this program is to provide easy access to a vast collection of words and their linguistic information. The electronic database enables users to:",
+      "items": [
+        "Search for words in multiple languages",
+        "View translations and linguistic information",
+        "Explore connections between related words",
+        "Access information about authors, translators, and source materials",
+        "Navigate through word relationships and linguistic structures"
+      ]
+    },
+    "features": {
+      "title": "Features",
+      "text": "Being unique in its kind, this project has both theoretical and practical significance. The database provides:",
+      "items": [
+        "Fast and efficient word search functionality",
+        "Comprehensive word information including translations",
+        "Visual representation of word connections and relationships",
+        "Access to metadata including authors, translators, and source books",
+        "User-friendly interface for exploring linguistic data"
+      ]
+    },
+    "contact": {
+      "title": "Contact",
+      "text": "For questions, suggestions, or inquiries about the electronic dictionary, please contact us:",
+      "email": "Email:",
+      "website": "Website:",
+      "websiteLink": "Electronic Dictionary"
+    }
+  },
+  "word": {
+    "loading": "Loading word...",
+    "errorLoading": "Error loading word. Please try again.",
+    "notFound": "Word not found",
+    "book": "Book:",
+    "author": "Author:",
+    "translator": "Translator:",
+    "originalExample": "Original Example Sentence:",
+    "armenianExample": "Armenian Example Sentence:",
+    "connectedWords": "Connected Words"
+  }
+}
+
