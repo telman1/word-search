@@ -89,7 +89,7 @@ export default function Home() {
             return (
               <div key={word.id} className="result-item">
                 <div className="word-display">
-                  <Link href={`/word/${word.id}`}>
+                  <Link href={`/word/${word.originalWord}`}>
                     <div className="original-word">{word.originalWord}</div>
                     {word.armenianWord && (
                       <div className="armenian-word">{word.armenianWord}</div>

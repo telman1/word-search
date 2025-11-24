@@ -299,7 +299,7 @@ body {
       font-size: 1.3rem;
       font-weight: bold;
       color: #1e293b;
-      margin-bottom: 1rem;
+      margin-bottom: 1.5rem;
       padding-bottom: 0.5rem;
       border-bottom: 2px solid #e2e8f0;
     }
@@ -320,6 +320,85 @@ body {
 
       &:hover {
         background: #e2e8f0;
+      }
+    }
+
+    .connected-words-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 1.5rem;
+      margin-top: 1rem;
+    }
+
+    .connected-word-card {
+      background: #f8f9fa;
+      border: 1px solid #e2e8f0;
+      border-radius: 8px;
+      padding: 1.5rem;
+      transition: all 0.3s ease;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+
+      &:hover {
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+        border-color: #2563eb;
+      }
+
+      .connected-word-link {
+        text-decoration: none;
+        color: inherit;
+        display: block;
+      }
+
+      .connected-word-header {
+        margin-bottom: 1rem;
+        padding-bottom: 1rem;
+        border-bottom: 1px solid #e2e8f0;
+
+        .connected-original-word {
+          font-size: 1.3rem;
+          font-weight: bold;
+          color: #1e293b;
+          margin-bottom: 0.5rem;
+        }
+
+        .connected-armenian-word {
+          font-size: 1.1rem;
+          color: #475569;
+          font-style: italic;
+          margin-bottom: 0.5rem;
+        }
+
+        .connected-language {
+          color: #64748b;
+          font-size: 0.9rem;
+        }
+      }
+
+      .connected-word-info {
+        display: flex;
+        flex-direction: column;
+        gap: 0.75rem;
+
+        .connected-info-item {
+          display: flex;
+          flex-direction: column;
+          gap: 0.25rem;
+
+          .connected-label {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+          }
+
+          .connected-value {
+            color: #6b7280;
+            font-size: 0.95rem;
+            line-height: 1.5;
+          }
+        }
       }
     }
   }
@@ -406,5 +485,16 @@ body {
 
   .word-detail {
     padding: 1rem;
+
+    .connections-section {
+      .connected-words-grid {
+        grid-template-columns: 1fr;
+        gap: 1rem;
+      }
+
+      .connected-word-card {
+        padding: 1rem;
+      }
+    }
   }
 }
