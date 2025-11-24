@@ -467,6 +467,61 @@ export interface AdminUser extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
+  collectionName: 'authors';
+  info: {
+    description: 'Authors of books';
+    displayName: 'Author';
+    pluralName: 'authors';
+    singularName: 'author';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::author.author'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
+export interface ApiBookBook extends Struct.CollectionTypeSchema {
+  collectionName: 'books';
+  info: {
+    description: 'Books containing words';
+    displayName: 'Book';
+    pluralName: 'books';
+    singularName: 'book';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<'oneToMany', 'api::book.book'> &
+      Schema.Attribute.Private;
+    publishedAt: Schema.Attribute.DateTime;
+    title: Schema.Attribute.String & Schema.Attribute.Required;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiLanguageLanguage extends Struct.CollectionTypeSchema {
   collectionName: 'languages';
   info: {
@@ -538,6 +593,35 @@ export interface ApiRelationRelation extends Struct.CollectionTypeSchema {
   };
 }
 
+export interface ApiTranslatorTranslator extends Struct.CollectionTypeSchema {
+  collectionName: 'translators';
+  info: {
+    description: 'Translators of books';
+    displayName: 'Translator';
+    pluralName: 'translators';
+    singularName: 'translator';
+  };
+  options: {
+    draftAndPublish: false;
+  };
+  attributes: {
+    createdAt: Schema.Attribute.DateTime;
+    createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+    locale: Schema.Attribute.String & Schema.Attribute.Private;
+    localizations: Schema.Attribute.Relation<
+      'oneToMany',
+      'api::translator.translator'
+    > &
+      Schema.Attribute.Private;
+    name: Schema.Attribute.String & Schema.Attribute.Required;
+    publishedAt: Schema.Attribute.DateTime;
+    updatedAt: Schema.Attribute.DateTime;
+    updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
+      Schema.Attribute.Private;
+  };
+}
+
 export interface ApiWordWord extends Struct.CollectionTypeSchema {
   collectionName: 'words';
   info: {
@@ -550,35 +634,25 @@ export interface ApiWordWord extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
-    affix: Schema.Attribute.String;
-    affix_number: Schema.Attribute.String;
-    affix_type: Schema.Attribute.Enumeration<
-      ['prefix', 'suffix', 'infix', 'none']
-    >;
+    armenianExampleSentence: Schema.Attribute.Text;
+    armenianWord: Schema.Attribute.String & Schema.Attribute.Required;
+    author: Schema.Attribute.Relation<'manyToOne', 'api::author.author'>;
+    book: Schema.Attribute.Relation<'manyToOne', 'api::book.book'>;
+    connections: Schema.Attribute.Relation<'manyToMany', 'api::word.word'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
-    language: Schema.Attribute.Relation<'manyToOne', 'api::language.language'>;
-    lemma: Schema.Attribute.String & Schema.Attribute.Required;
-    lemma_part: Schema.Attribute.String;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::word.word'> &
       Schema.Attribute.Private;
-    notes: Schema.Attribute.RichText;
-    ordinal: Schema.Attribute.String;
-    part_of_speech: Schema.Attribute.String;
+    originalExampleSentence: Schema.Attribute.Text;
+    originalLanguage: Schema.Attribute.String & Schema.Attribute.Required;
+    originalWord: Schema.Attribute.String & Schema.Attribute.Required;
     publishedAt: Schema.Attribute.DateTime;
-    relations_from: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::relation.relation'
+    translator: Schema.Attribute.Relation<
+      'manyToOne',
+      'api::translator.translator'
     >;
-    relations_to: Schema.Attribute.Relation<
-      'oneToMany',
-      'api::relation.relation'
-    >;
-    root: Schema.Attribute.String;
-    root_number: Schema.Attribute.String;
-    stem: Schema.Attribute.String;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -1096,8 +1170,11 @@ declare module '@strapi/strapi' {
       'admin::transfer-token': AdminTransferToken;
       'admin::transfer-token-permission': AdminTransferTokenPermission;
       'admin::user': AdminUser;
+      'api::author.author': ApiAuthorAuthor;
+      'api::book.book': ApiBookBook;
       'api::language.language': ApiLanguageLanguage;
       'api::relation.relation': ApiRelationRelation;
+      'api::translator.translator': ApiTranslatorTranslator;
       'api::word.word': ApiWordWord;
       'plugin::content-releases.release': PluginContentReleasesRelease;
       'plugin::content-releases.release-action': PluginContentReleasesReleaseAction;
