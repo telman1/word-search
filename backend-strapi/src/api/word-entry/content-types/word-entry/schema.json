@@ -1,0 +1,61 @@
+{
+  "kind": "collectionType",
+  "collectionName": "word_entries",
+  "info": {
+    "singularName": "word-entry",
+    "pluralName": "word-entries",
+    "displayName": "Word Entry",
+    "description": "Word units with translations and context"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "book": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::book.book",
+      "required": true
+    },
+    "translator": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::translator.translator",
+      "required": true
+    },
+    "wordUnitEasternArmenian": {
+      "type": "string",
+      "required": true
+    },
+    "wordUnitWesternArmenian": {
+      "type": "string"
+    },
+    "suggestedEquivalentArmenian": {
+      "type": "string"
+    },
+    "wordUnitOriginalLanguage": {
+      "type": "string",
+      "required": true
+    },
+    "suggestedEquivalentOriginal": {
+      "type": "string"
+    },
+    "translatorCommentary": {
+      "type": "text"
+    },
+    "wordMeaningSense": {
+      "type": "text"
+    },
+    "contextualPassageArmenian": {
+      "type": "text"
+    },
+    "contextualPassageOriginal": {
+      "type": "text"
+    },
+    "originalLanguageType": {
+      "type": "enumeration",
+      "enum": ["english", "french", "german", "italian", "other"]
+    }
+  }
+}

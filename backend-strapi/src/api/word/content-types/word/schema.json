@@ -1,0 +1,54 @@
+{
+  "kind": "collectionType",
+  "collectionName": "words",
+  "info": {
+    "singularName": "word",
+    "pluralName": "words",
+    "displayName": "Word",
+    "description": "Words with linguistic data"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "originalWord": {
+      "type": "string",
+      "required": true
+    },
+    "originalLanguage": {
+      "type": "string",
+      "required": true
+    },
+    "armenianWord": {
+      "type": "string",
+      "required": true
+    },
+    "originalExampleSentence": {
+      "type": "text"
+    },
+    "armenianExampleSentence": {
+      "type": "text"
+    },
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::author.author"
+    },
+    "translator": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::translator.translator"
+    },
+    "book": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::book.book"
+    },
+    "connections": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::word.word"
+    }
+  }
+}

@@ -1,0 +1,30 @@
+{
+  "kind": "collectionType",
+  "collectionName": "books",
+  "info": {
+    "singularName": "book",
+    "pluralName": "books",
+    "displayName": "Book",
+    "description": "Books - name in Armenian and original language"
+  },
+  "options": {
+    "draftAndPublish": false
+  },
+  "pluginOptions": {},
+  "attributes": {
+    "nameArmenian": {
+      "type": "string",
+      "required": true
+    },
+    "nameOriginalLanguage": {
+      "type": "string",
+      "required": true
+    },
+    "originalLanguageType": {
+      "type": "enumeration",
+      "enum": ["english", "french", "german", "italian", "other"],
+      "required": true
+    }
+  }
+}
+
