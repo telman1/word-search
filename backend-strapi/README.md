@@ -106,8 +106,4 @@ The bootstrap script creates:
 
 ## Production Notes
 
-For production deployment:
-1. Update .env with production database credentials
-2. Generate new secrets for APP_KEYS, API_TOKEN_SALT, etc.
-3. Set DATABASE_SSL=true for secure connections
-4. Configure proper CORS settings for your frontend domain
+See the repo root **[DEPLOYMENT.md](../DEPLOYMENT.md)** for Render/Postgres steps. Copy **[.env.example](.env.example)** to `.env` for local setup only; production secrets belong in your host’s environment.

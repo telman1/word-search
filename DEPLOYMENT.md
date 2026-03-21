@@ -1,214 +1,97 @@
-# Deployment Guide for Render
+# Deployment (push to production)
 
-This guide will help you deploy both the Strapi backend and Next.js frontend to Render.
+The default path is **Render** + **Render Postgres** + **auto-deploy on every push** to `main`. After a one-time Blueprint setup, you only **push** to GitHub; Render builds and deploys both apps.
 
-## Prerequisites
+> **Security:** If a database URL or password was ever committed or shared, rotate it in the provider and update env vars.
 
-1. A GitHub account with your repository pushed
-2. A Render account (sign up at https://render.com)
+---
 
-## Step 1: Database Setup
+## One-time setup (about 10 minutes)
 
-### Using Your Neon Database (External Database)
+1. Push this repo to **GitHub** (or GitLab).
+2. In [Render](https://render.com): **New +** → **Blueprint** → select the repo.
+3. Review [`render.yaml`](render.yaml) and click **Apply** (creates Postgres + backend + frontend).
+4. Wait until deploys finish (first build can take several minutes).
+5. Open **`https://word-search-backend.onrender.com/admin`**, create the Strapi admin user.
+6. Open **`https://word-search-frontend.onrender.com`** and smoke-test search.
 
-You're using a **Neon PostgreSQL database**. Here's how to configure it:
+**That’s it for configuration** — `DATABASE_URL` is wired from Render Postgres; `NEXT_PUBLIC_API_BASE_URL` and `CORS_ORIGIN` are set in the Blueprint to match the fixed service names.
 
-1. **Get your database URL** (you already have it):
-   ```
-   postgresql://neondb_owner:npg_Nq9hQmEsF5uO@ep-winter-frog-aebb3x28-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
-   ```
+---
 
-2. **When deploying**, you'll need to set the `DATABASE_URL` environment variable manually in Render dashboard (see Step 2 below)
+## Day-to-day: only push
 
-### Alternative: Create New Database on Render
+- **Branch:** `main` (set in `render.yaml`; change if your default branch differs).
+- **Trigger:** `autoDeployTrigger: commit` — each push to `main` redeploys both web services.
+- No manual env edits unless you rename services, add a custom domain, or switch database provider.
 
-If you prefer to use Render's database instead:
-1. Go to your Render Dashboard
-2. Click **"New +"** → **"PostgreSQL"**
-3. Configure and create the database
-4. Use the connection string from Render
+---
 
-## Step 2: Deploy Strapi Backend
+## If you rename a Render service
 
-### Option A: Using render.yaml (Recommended)
+Render URLs are `https://<service-name>.onrender.com`. If you change `name:` under `services` in `render.yaml`, update in the same file:
 
-1. Go to Render Dashboard
-2. Click **"New +"** → **"Blueprint"**
-3. Connect your GitHub repository
-4. Render will detect the `render.yaml` file
-5. Review the configuration and click **"Apply"**
-6. Render will create all services automatically
-7. **After services are created**, go to your backend service → **Environment** tab
-8. Add the `DATABASE_URL` environment variable with your Neon database URL:
-   ```
-   postgresql://neondb_owner:npg_Nq9hQmEsF5uO@ep-winter-frog-aebb3x28-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
-   ```
-9. Save and the service will automatically redeploy
+- `CORS_ORIGIN` on the backend → frontend’s public URL  
+- `NEXT_PUBLIC_API_BASE_URL` on the frontend → backend’s public URL  
 
-### Option B: Manual Setup
+Commit and push; the next deploy picks up the change.
 
-1. Go to Render Dashboard
-2. Click **"New +"** → **"Web Service"**
-3. Connect your GitHub repository
-4. Configure:
-   - **Name**: `word-search-backend`
-   - **Root Directory**: `backend-strapi`
-   - **Environment**: `Node`
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm start`
-   - **Plan**: Starter (Free tier available)
+---
 
-5. **Environment Variables** - Add these:
-   ```
-   NODE_ENV=production
-   HOST=0.0.0.0
-   PORT=1337
-   DATABASE_CLIENT=postgres
-   DATABASE_URL=postgresql://neondb_owner:npg_Nq9hQmEsF5uO@ep-winter-frog-aebb3x28-pooler.c-2.us-east-2.aws.neon.tech/neondb?sslmode=require&channel_binding=require
-   DATABASE_SSL_REJECT_UNAUTHORIZED=false
-   ```
-   
-   **Important**: Replace the DATABASE_URL with your actual Neon database URL if different.
+## Using Neon (or another external Postgres) instead
 
-6. **Generate Secrets** - Click "Generate" for these (Render will auto-generate):
-   - `APP_KEYS`
-   - `API_TOKEN_SALT`
-   - `ADMIN_JWT_SECRET`
-   - `JWT_SECRET`
-   - `TRANSFER_TOKEN_SALT`
+The checked-in [`render.yaml`](render.yaml) provisions **Render Postgres** so nothing is pasted by hand. To use **Neon** (or similar):
 
-7. Click **"Create Web Service"**
+1. Remove the `databases:` block from `render.yaml`.
+2. On the backend service in Render, set **`DATABASE_URL`** to your external connection string (Dashboard → Environment).
+3. Keep `DATABASE_CLIENT=postgres` and `DATABASE_SSL_REJECT_UNAUTHORIZED` as in the file.
 
-8. Wait for deployment (5-10 minutes)
+You still get **push-to-deploy**; you only maintain `DATABASE_URL` in the dashboard (or an [environment group](https://render.com/docs/configure-environment-variables#environment-groups)).
 
-9. Once deployed, note your backend URL (e.g., `https://word-search-backend.onrender.com`)
+---
 
-## Step 3: Deploy Next.js Frontend
+## Manual services (no Blueprint)
 
-1. Go to Render Dashboard
-2. Click **"New +"** → **"Web Service"**
-3. Connect your GitHub repository
-4. Configure:
-   - **Name**: `word-search-frontend`
-   - **Root Directory**: `frontend-next`
-   - **Environment**: `Node`
-   - **Build Command**: `npm install && npm run build`
-   - **Start Command**: `npm start`
-   - **Plan**: Starter (Free tier available)
+If you create web services by hand instead of a Blueprint, use root directories `backend-strapi` / `frontend-next`, the same build/start commands as in `render.yaml`, and the same env vars as in that file.
 
-5. **Environment Variables** - Add:
-   ```
-   NODE_ENV=production
-   NEXT_PUBLIC_API_BASE_URL=https://word-search-backend.onrender.com
-   ```
-   (Replace with your actual backend URL from Step 2)
+---
 
-6. Click **"Create Web Service"**
+## After deploy
 
-7. Wait for deployment (5-10 minutes)
+1. Strapi admin: `https://word-search-backend.onrender.com/admin`
+2. API: `https://word-search-backend.onrender.com/api`
+3. App: `https://word-search-frontend.onrender.com`
 
-## Step 4: Configure CORS (Important!)
+If the UI cannot reach the API: confirm `NEXT_PUBLIC_API_BASE_URL` and `CORS_ORIGIN` still match your real URLs (including `https://`).
 
-After the backend is deployed:
+---
 
-1. Go to your Strapi backend service in Render
-2. Go to **Environment** tab
-3. Add this environment variable:
-   ```
-   CORS_ORIGIN=https://word-search-frontend.onrender.com
-   ```
-   (Replace with your actual frontend URL)
+## Local production-style check
 
-4. Or update `backend-strapi/config/middlewares.js` to allow your frontend domain
+```bash
+cd backend-strapi && docker-compose up postgres -d
+# Configure .env from .env.example, then:
+npm install && npm run build && npm start
+```
 
-## Step 5: Access Your Application
+```bash
+cd frontend-next
+cp .env.local.example .env.local
+npm install && npm run build && npm start
+```
 
-- **Frontend**: `https://word-search-frontend.onrender.com`
-- **Backend API**: `https://word-search-backend.onrender.com/api`
-- **Strapi Admin**: `https://word-search-backend.onrender.com/admin`
-
-## Step 6: Database Schema & Initial Data
-
-### Automatic Schema Creation
-
-When Strapi starts for the first time, it will:
-1. **Automatically create all database tables** based on your collection types (Word, Author, Translator, Book, etc.)
-2. **Run the bootstrap script** which creates sample data:
-   - Sample Author, Translator, and Book
-   - 4 sample words with translations
-   - Connections between words
-
-### First-Time Admin Setup
-
-1. Visit your Strapi Admin URL: `https://word-search-backend.onrender.com/admin`
-2. Create your admin account (first user)
-3. The bootstrap script runs automatically on first start
-4. Sample data will be available immediately
-
-### Database Migrations
-
-Strapi handles database migrations automatically. When you:
-- Add new fields to collection types
-- Create new collection types
-- Modify relations
-
-Strapi will automatically update the database schema on the next deployment.
-
-### Viewing Database
-
-To view your database:
-1. Go to Render Dashboard
-2. Click on your `word-search-db` database
-3. Click **"Connect"** tab
-4. Use the connection string with any PostgreSQL client (pgAdmin, DBeaver, etc.)
+---
 
 ## Troubleshooting
 
-### Backend won't start
-- Check the logs in Render Dashboard
-- Verify all environment variables are set
-- Ensure `DATABASE_URL` is correct
+| Issue | What to check |
+|--------|----------------|
+| Backend boot fails | Logs on Render, `DATABASE_URL`, SSL flags |
+| Frontend / CORS | URLs in `render.yaml` vs actual Render URLs, `https://` |
+| Cold starts (free tier) | First request after idle can take ~30s |
 
-### Frontend can't connect to backend
-- Verify `NEXT_PUBLIC_API_BASE_URL` is set correctly
-- Check CORS settings in Strapi
-- Ensure backend is running and accessible
+---
 
-### Database connection errors
-- Verify `DATABASE_URL` uses the Internal Database URL
-- Check that database is running
-- Ensure `DATABASE_SSL_REJECT_UNAUTHORIZED=false` is set
+## Cost note
 
-## Free Tier Limitations
-
-- Services spin down after 15 minutes of inactivity
-- First request after spin-down takes ~30 seconds
-- Consider upgrading to paid plan for always-on service
-
-## Custom Domain (Optional)
-
-1. In Render Dashboard, go to your service
-2. Click **"Settings"** → **"Custom Domains"**
-3. Add your domain
-4. Follow DNS configuration instructions
-
-## Environment Variables Reference
-
-### Backend (Strapi)
-- `NODE_ENV=production`
-- `HOST=0.0.0.0`
-- `PORT=1337`
-- `DATABASE_CLIENT=postgres`
-- `DATABASE_URL` (from database service)
-- `DATABASE_SSL_REJECT_UNAUTHORIZED=false`
-- `APP_KEYS` (auto-generated)
-- `API_TOKEN_SALT` (auto-generated)
-- `ADMIN_JWT_SECRET` (auto-generated)
-- `JWT_SECRET` (auto-generated)
-- `TRANSFER_TOKEN_SALT` (auto-generated)
-- `CORS_ORIGIN` (your frontend URL)
-
-### Frontend (Next.js)
-- `NODE_ENV=production`
-- `NEXT_PUBLIC_API_BASE_URL` (your backend URL)
-
+`render.yaml` uses **`plan: free`** for Postgres when your workspace supports it. If the Blueprint apply fails on the database step, switch to `basic-256mb` (or another [supported plan](https://render.com/docs/postgresql)) in `render.yaml` and push again.

@@ -20,8 +20,7 @@ This is the Next.js frontend for the Word Search MVP application.
    ```bash
    cp .env.local.example .env.local
    ```
-   
-   Update `.env.local` with your Strapi backend URL if different from `http://localhost:1337`
+   Edit `.env.local`: set `NEXT_PUBLIC_API_BASE_URL` to your Strapi URL (default `http://localhost:1337`).
 
 3. **Start the development server:**
    ```bash

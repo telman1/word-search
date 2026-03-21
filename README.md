@@ -130,18 +130,19 @@ The bootstrap script creates:
 - **API:** REST calls to Strapi backend
 - **Environment:** `.env.local` for API URL
 
-## 🚀 Production Checklist
+## 🚀 Production deployment
+
+**Push to deploy:** connect the repo to Render once using the root [`render.yaml`](render.yaml) (Blueprint), then keep pushing to `main` — Render rebuilds backend + frontend automatically. Details: **[DEPLOYMENT.md](./DEPLOYMENT.md)**.
 
 ### Backend
-- [ ] Update `.env` with production database credentials
+- [ ] Update `.env` with production database credentials (see `backend-strapi/.env.example`)
 - [ ] Generate new secrets for APP_KEYS, API_TOKEN_SALT, etc.
-- [ ] Set DATABASE_SSL=true for secure connections
-- [ ] Configure CORS settings for frontend domain
+- [ ] Use SSL for managed Postgres (`DATABASE_URL` / provider docs)
+- [ ] Set `CORS_ORIGIN` to your frontend’s public HTTPS origin
 
 ### Frontend
-- [ ] Update `NEXT_PUBLIC_API_BASE_URL` to production Strapi URL
-- [ ] Build application: `npm run build`
-- [ ] Deploy to hosting platform
+- [ ] Set `NEXT_PUBLIC_API_BASE_URL` to production Strapi URL (`frontend-next/.env.local.example`)
+- [ ] Build: `npm run build` — deploy the `frontend-next` app on your host
 
 ## 🎉 Verification
 
