@@ -64,6 +64,12 @@ If you create web services by hand instead of a Blueprint, use root directories 
 
 If the UI cannot reach the API: confirm `NEXT_PUBLIC_API_BASE_URL` and `CORS_ORIGIN` still match your real URLs (including `https://`).
 
+### Frontend on Vercel, API on Render (CORS)
+
+Strapi only sends `Access-Control-Allow-Origin` for origins listed in `CORS_ORIGIN` (comma-separated). Vercel preview URLs change (`*.vercel.app`), so the repo sets **`CORS_ALLOW_VERCEL=true`** in [`render.yaml`](render.yaml). That allows any **`https://*.vercel.app`** origin while still listing your Render frontend in `CORS_ORIGIN`.
+
+If you deploy the backend **without** that env var, add it in Render → **word-search-backend** → **Environment** → `CORS_ALLOW_VERCEL` = `true`, then **Manual Deploy**.
+
 ---
 
 ## Local production-style check

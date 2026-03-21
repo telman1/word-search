@@ -49,6 +49,9 @@ services:
         generateValue: true
       - key: CORS_ORIGIN
         value: https://word-search-frontend.onrender.com
+      # Allow browser requests from Vercel (preview + production *.vercel.app)
+      - key: CORS_ALLOW_VERCEL
+        value: "true"
 
   - type: web
     name: word-search-frontend

@@ -1,9 +1,30 @@
 module.exports = ({ env }) => {
-  // Get CORS origin from environment variable or use defaults
   const corsOrigin = env('CORS_ORIGIN');
-  const origins = corsOrigin 
-    ? corsOrigin.split(',').map(origin => origin.trim())
-    : ['http://localhost:3000', 'http://localhost:3001', 'http://localhost:3002', 'http://127.0.0.1:3000', 'http://127.0.0.1:3001', 'http://127.0.0.1:3002'];
+  const allowVercel = env.bool('CORS_ALLOW_VERCEL', false);
+
+  const defaultOrigins = [
+    'http://localhost:3000',
+    'http://localhost:3001',
+    'http://localhost:3002',
+    'http://127.0.0.1:3000',
+    'http://127.0.0.1:3001',
+    'http://127.0.0.1:3002',
+  ];
+
+  const explicitOrigins = corsOrigin
+    ? corsOrigin.split(',').map((o) => o.trim()).filter(Boolean)
+    : [];
+
+  /** @param {string | undefined} origin */
+  const isHttpsVercelApp = (origin) => {
+    if (!origin) return false;
+    try {
+      const { protocol, hostname } = new URL(origin);
+      return protocol === 'https:' && hostname.endsWith('.vercel.app');
+    } catch {
+      return false;
+    }
+  };
 
   return [
     'strapi::logger',
@@ -12,9 +33,15 @@ module.exports = ({ env }) => {
     {
       name: 'strapi::cors',
       config: {
-        enabled: true,
         headers: '*',
-        origin: origins,
+        origin: async (ctx) => {
+          const requestOrigin = ctx.get('Origin');
+          const list = [...new Set([...explicitOrigins, ...defaultOrigins])];
+          if (allowVercel && requestOrigin && isHttpsVercelApp(requestOrigin)) {
+            list.push(requestOrigin);
+          }
+          return list;
+        },
       },
     },
     'strapi::poweredBy',
@@ -25,5 +52,3 @@ module.exports = ({ env }) => {
     'strapi::public',
   ];
 };
-
-
