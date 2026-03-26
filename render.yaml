@@ -47,9 +47,10 @@ services:
         generateValue: true
       - key: TRANSFER_TOKEN_SALT
         generateValue: true
+      # Comma-separated; add custom domains here. *.vercel.app is covered by CORS_ALLOW_VERCEL (see middlewares.js).
       - key: CORS_ORIGIN
         value: https://word-search-frontend.onrender.com
-      # Allow browser requests from Vercel (preview + production *.vercel.app)
+      # Allow browser requests from Vercel (preview + production *.vercel.app). Code also defaults this to true if unset.
       - key: CORS_ALLOW_VERCEL
         value: "true"
 

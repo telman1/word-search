@@ -16,12 +16,13 @@
 
 const fs = require('fs');
 const path = require('path');
-const Strapi = require('@strapi/strapi');
+const { createStrapi } = require('@strapi/strapi');
 
 const SEPARATORS = [' – ', ' - ', ' — ', ' –', '- '];
 
 async function importFromFile(filePath, originalLanguageType = 'french') {
-  const app = await Strapi().load();
+  const app = createStrapi();
+  await app.load();
 
   try {
     const content = fs.readFileSync(path.resolve(filePath), 'utf-8');

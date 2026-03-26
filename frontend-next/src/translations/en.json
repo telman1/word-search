@@ -60,6 +60,10 @@
       "websiteLink": "Electronic Dictionary"
     }
   },
+  "footer": {
+    "gulbenkianAlt": "Calouste Gulbenkian Foundation",
+    "linksTitle": "Quick links"
+  },
   "word": {
     "loading": "Loading word...",
     "errorLoading": "Error loading word. Please try again.",

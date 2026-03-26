@@ -5,10 +5,11 @@
  * Requires: cd backend-strapi first, and Strapi env must be loadable.
  */
 
-const Strapi = require('@strapi/strapi');
+const { createStrapi } = require('@strapi/strapi');
 
 async function clearData() {
-  const app = await Strapi().load();
+  const app = createStrapi();
+  await app.load();
 
   try {
     // Delete all word entries first (they reference book and translator)

@@ -1,6 +1,7 @@
 module.exports = ({ env }) => {
   const corsOrigin = env('CORS_ORIGIN');
-  const allowVercel = env.bool('CORS_ALLOW_VERCEL', false);
+  // Default true: Vercel preview/production URLs (*.vercel.app) are allowed when CORS_ALLOW_VERCEL is unset (e.g. Render env drift). Set to false locally if you need to lock down.
+  const allowVercel = env.bool('CORS_ALLOW_VERCEL', true);
 
   const defaultOrigins = [
     'http://localhost:3000',

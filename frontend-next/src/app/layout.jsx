@@ -1,5 +1,6 @@
 import '../styles/globals.scss'
 import { LanguageProvider } from '../contexts/LanguageContext'
+import Footer from '../components/Footer'
 import Header from '../components/Header'
 
 export const metadata = {
@@ -14,11 +15,12 @@ export default function RootLayout({
     <html lang="en">
       <body>
         <LanguageProvider>
-          <div className="container">
+          <div className="container layout-shell">
             <Header />
             <main>
               {children}
             </main>
+            <Footer />
           </div>
         </LanguageProvider>
       </body>
