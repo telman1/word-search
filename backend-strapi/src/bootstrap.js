@@ -16,15 +16,20 @@ module.exports = async () => {
       // Delete books and translators
       const books = await strapi.entityService.findMany('api::book.book', {});
       const translators = await strapi.entityService.findMany('api::translator.translator', {});
+      const authors = await strapi.entityService.findMany('api::author.author', {});
       for (const b of books) await strapi.entityService.delete('api::book.book', b.id);
       for (const t of translators) await strapi.entityService.delete('api::translator.translator', t.id);
+      for (const a of authors) await strapi.entityService.delete('api::author.author', a.id);
       console.log('Cleared all data.');
       // Import from file
       if (fs.existsSync(importPath)) {
         const content = fs.readFileSync(importPath, 'utf-8');
         const lines = content.split('\n').map(l => l.trim()).filter(Boolean);
-        const book = await strapi.entityService.create('api::book.book', {
+        const author = await strapi.entityService.create('api::author.author', {
           data: { nameArmenian: 'PDF Ներմուծում', nameOriginalLanguage: 'PDF Import', originalLanguageType: lang }
+        });
+        const book = await strapi.entityService.create('api::book.book', {
+          data: { nameArmenian: 'PDF Ներմուծում', nameOriginalLanguage: 'PDF Import', originalLanguageType: lang, author: author.id }
         });
         const translator = await strapi.entityService.create('api::translator.translator', {
           data: { nameArmenian: 'PDF Ներմուծում', nameOriginalLanguage: 'PDF Import', originalLanguageType: lang }
@@ -65,7 +70,9 @@ module.exports = async () => {
       'api::book.book.find',
       'api::book.book.findOne',
       'api::translator.translator.find',
-      'api::translator.translator.findOne'
+      'api::translator.translator.findOne',
+      'api::author.author.find',
+      'api::author.author.findOne'
     ];
     const existingPermissions = await strapi.db.query('plugin::users-permissions.permission').findMany({
       where: { role: publicRole.id }
@@ -91,12 +98,23 @@ module.exports = async () => {
 
   console.log('Bootstrapping sample data...');
 
+  // Create sample Author
+  const author = await strapi.entityService.create('api::author.author', {
+    data: {
+      nameArmenian: 'Օրինակ Հեղինակ',
+      nameOriginalLanguage: 'Sample Author',
+      originalLanguageType: 'english'
+    }
+  });
+  console.log('Created author:', author.id);
+
   // Create sample Book (new schema)
   const book = await strapi.entityService.create('api::book.book', {
     data: {
       nameArmenian: 'Օրինակ Գիրք',
       nameOriginalLanguage: 'Sample Book',
-      originalLanguageType: 'english'
+      originalLanguageType: 'english',
+      author: author.id
     }
   });
   console.log('Created book:', book.id);

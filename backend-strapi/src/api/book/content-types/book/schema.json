@@ -12,6 +12,11 @@
   },
   "pluginOptions": {},
   "attributes": {
+    "author": {
+      "type": "relation",
+      "relation": "manyToOne",
+      "target": "api::author.author"
+    },
     "nameArmenian": {
       "type": "string",
       "required": true

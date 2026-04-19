@@ -5,17 +5,25 @@
     "singularName": "author",
     "pluralName": "authors",
     "displayName": "Author",
-    "description": "Authors of books"
+    "description": "Authors — names in Armenian and original language"
   },
   "options": {
     "draftAndPublish": false
   },
   "pluginOptions": {},
   "attributes": {
-    "name": {
+    "nameArmenian": {
       "type": "string",
+      "required": true
+    },
+    "nameOriginalLanguage": {
+      "type": "string",
+      "required": true
+    },
+    "originalLanguageType": {
+      "type": "enumeration",
+      "enum": ["english", "french", "german", "italian", "other"],
       "required": true
     }
   }
 }
-

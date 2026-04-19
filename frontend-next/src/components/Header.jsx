@@ -25,6 +25,7 @@ export default function Header() {
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <nav className="nav">
             <Link href="/">{t('common.search')}</Link>
+            <Link href="/enhanced-search">{t('enhancedSearch.nav')}</Link>
             <Link href="/about">{t('common.about')}</Link>
           </nav>
           <LanguageSwitcher />

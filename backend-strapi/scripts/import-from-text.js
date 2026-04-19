@@ -31,6 +31,19 @@ async function importFromFile(filePath, originalLanguageType = 'french') {
     // Get or create Book and Translator
     let books = await app.entityService.findMany('api::book.book', {});
     let translators = await app.entityService.findMany('api::translator.translator', {});
+    let authors = await app.entityService.findMany('api::author.author', {});
+
+    if (authors.length === 0) {
+      const author = await app.entityService.create('api::author.author', {
+        data: {
+          nameArmenian: 'PDF Ներմուծում',
+          nameOriginalLanguage: 'PDF Import',
+          originalLanguageType: originalLanguageType,
+        },
+      });
+      authors = [author];
+      console.log('Created default Author.');
+    }
 
     if (books.length === 0) {
       const book = await app.entityService.create('api::book.book', {
@@ -38,6 +51,7 @@ async function importFromFile(filePath, originalLanguageType = 'french') {
           nameArmenian: 'PDF Ներմուծում',
           nameOriginalLanguage: 'PDF Import',
           originalLanguageType: originalLanguageType,
+          author: authors[0].id,
         },
       });
       books = [book];

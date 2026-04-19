@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../contexts/LanguageContext'
+import { buildHomeWordSearchQuery } from '../lib/strapi-query'
 
 export default function Home() {
   const { t } = useLanguage()
@@ -30,15 +31,8 @@ export default function Home() {
     
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'
-      const encoded = encodeURIComponent(searchQuery)
-      // Case-insensitive search across first 5 content columns
-      const url = `${apiBase}/api/word-entries?` +
-        `filters[$or][0][wordUnitEasternArmenian][$containsi]=${encoded}` +
-        `&filters[$or][1][wordUnitWesternArmenian][$containsi]=${encoded}` +
-        `&filters[$or][2][suggestedEquivalentArmenian][$containsi]=${encoded}` +
-        `&filters[$or][3][wordUnitOriginalLanguage][$containsi]=${encoded}` +
-        `&filters[$or][4][suggestedEquivalentOriginal][$containsi]=${encoded}` +
-        `&populate[book]=*&populate[translator]=*`
+      const qs = buildHomeWordSearchQuery(searchQuery)
+      const url = `${apiBase}/api/word-entries?${qs}`
       
       const response = await fetch(url)
       
@@ -69,6 +63,11 @@ export default function Home() {
           onChange={(e) => setQuery(e.target.value)}
           className="search-input"
         />
+        <div style={{ marginTop: '1rem' }}>
+          <Link href="/enhanced-search" className="enhanced-search-entry-link">
+            {t('enhancedSearch.openLink')}
+          </Link>
+        </div>
       </div>
 
       {error && <div className="error">{error}</div>}
@@ -91,6 +90,12 @@ export default function Home() {
                   <div className="suggested-equiv">{entry.suggestedEquivalentOriginal}</div>
                 )}
               </Link>
+              {entry.book?.author && (
+                <div className="author">
+                  {t('home.author')}: {entry.book.author.nameArmenian}
+                  {entry.book.author.nameOriginalLanguage && ` (${entry.book.author.nameOriginalLanguage})`}
+                </div>
+              )}
               {entry.book && (
                 <div className="book">{t('home.book')}: {entry.book.nameArmenian} ({entry.book.nameOriginalLanguage})</div>
               )}

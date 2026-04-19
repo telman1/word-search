@@ -19,12 +19,18 @@ async function clearData() {
     }
     console.log(`Deleted ${entries.length} word entries.`);
 
-    // Delete all books
+    // Delete all books (before authors: books may reference authors)
     const books = await app.entityService.findMany('api::book.book', {});
     for (const b of books) {
       await app.entityService.delete('api::book.book', b.id);
     }
     console.log(`Deleted ${books.length} books.`);
+
+    const authors = await app.entityService.findMany('api::author.author', {});
+    for (const a of authors) {
+      await app.entityService.delete('api::author.author', a.id);
+    }
+    console.log(`Deleted ${authors.length} authors.`);
 
     // Delete all translators
     const translators = await app.entityService.findMany('api::translator.translator', {});

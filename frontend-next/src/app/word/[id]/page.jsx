@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useLanguage } from '../../../contexts/LanguageContext'
+import { buildWordEntryDetailQuery } from '../../../lib/strapi-query'
 
 export default function WordDetail() {
   const { t } = useLanguage()
@@ -27,9 +28,8 @@ export default function WordDetail() {
       // Strapi 5 uses documentId; encode for URL safety
       const docId = encodeURIComponent(id)
       
-      const response = await fetch(
-        `${apiBaseUrl}/api/word-entries/${docId}?populate[book]=*&populate[translator]=*`
-      )
+      const q = buildWordEntryDetailQuery()
+      const response = await fetch(`${apiBaseUrl}/api/word-entries/${docId}?${q}`)
       
       if (!response.ok) {
         const errData = await response.json().catch(() => ({}))
@@ -78,6 +78,15 @@ export default function WordDetail() {
 
       <div className="word-info">
         <div className="info-grid">
+          {entry.book?.author && (
+            <div className="info-item">
+              <div className="label">{t('word.author')}</div>
+              <div className="value">
+                {entry.book.author.nameArmenian}
+                {entry.book.author.nameOriginalLanguage && ` (${entry.book.author.nameOriginalLanguage})`}
+              </div>
+            </div>
+          )}
           {entry.book && (
             <div className="info-item">
               <div className="label">{t('word.book')}</div>
