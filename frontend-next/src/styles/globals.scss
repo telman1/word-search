@@ -227,6 +227,168 @@ body::before {
       border-color: #473D3D;
     }
   }
+
+  .search-input-wrap {
+    position: relative;
+    width: 100%;
+  }
+
+  .search-input.search-input--with-keyboard {
+    padding-right: 2.85rem;
+  }
+
+  .search-input-keyboard-btn {
+    position: absolute;
+    right: 0.45rem;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.35rem;
+    height: 2.35rem;
+    padding: 0;
+    border: none;
+    border-radius: 6px;
+    background: rgba(71, 61, 61, 0.08);
+    color: #473d3d;
+    cursor: pointer;
+    transition: background 0.2s, color 0.2s;
+
+    &:hover {
+      background: rgba(71, 61, 61, 0.14);
+    }
+
+    &:focus-visible {
+      outline: 2px solid #473d3d;
+      outline-offset: 2px;
+    }
+  }
+}
+
+.armenian-keyboard-root {
+  position: fixed;
+  inset: 0;
+  z-index: 4000;
+}
+
+.armenian-keyboard-backdrop {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  border: none;
+  background: rgba(15, 23, 42, 0.38);
+  cursor: pointer;
+}
+
+.armenian-keyboard-panel {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  max-height: min(46vh, 340px);
+  overflow: auto;
+  background: #f1f5f9;
+  border-radius: 14px 14px 0 0;
+  box-shadow: 0 -10px 40px rgba(0, 0, 0, 0.18);
+  padding: 0.4rem 0.6rem 0.85rem;
+  font-family: system-ui, 'Noto Sans Armenian', 'Segoe UI', sans-serif;
+}
+
+.armenian-keyboard-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0.15rem 0.1rem 0.45rem;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.08);
+  margin-bottom: 0.45rem;
+}
+
+.armenian-keyboard-title {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: #1e293b;
+}
+
+.armenian-keyboard-close {
+  width: 2rem;
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: #475569;
+  font-size: 1.35rem;
+  line-height: 1;
+  cursor: pointer;
+
+  &:hover {
+    background: rgba(0, 0, 0, 0.06);
+  }
+
+  &:focus-visible {
+    outline: 2px solid #473d3d;
+    outline-offset: 2px;
+  }
+}
+
+.armenian-keyboard-rows {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.armenian-keyboard-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.3rem;
+  justify-content: center;
+}
+
+.armenian-keyboard-row-actions {
+  margin-top: 0.15rem;
+}
+
+.armenian-keyboard-key {
+  min-width: 2rem;
+  padding: 0.45rem 0.35rem;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  background: #fff;
+  color: #1e293b;
+  font-size: 1.05rem;
+  cursor: pointer;
+  transition: background 0.15s, border-color 0.15s;
+
+  &:hover {
+    background: #e2e8f0;
+    border-color: #94a3b8;
+  }
+
+  &:active {
+    background: #cbd5e1;
+  }
+
+  &:focus-visible {
+    outline: 2px solid #473d3d;
+    outline-offset: 1px;
+  }
+}
+
+.armenian-keyboard-key-wide {
+  flex: 1;
+  min-width: 6rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #475569;
+}
+
+.armenian-keyboard-key-backspace {
+  min-width: 3rem;
+  font-size: 1.1rem;
 }
 
 // Results styles

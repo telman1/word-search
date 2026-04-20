@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { buildEnhancedWordEntriesQuery } from '../../lib/strapi-query'
+import SearchInputWithKeyboard from '../../components/SearchInputWithKeyboard'
 
 function armenianWordDisplay(entry) {
   const e = entry.wordUnitEasternArmenian || ''
@@ -74,7 +75,7 @@ export default function EnhancedSearchPage() {
         <div className="enhanced-search-grid">
           <label className="enhanced-field">
             <span className="enhanced-field-label">{t('enhancedSearch.labelEastern')}</span>
-            <input
+            <SearchInputWithKeyboard
               type="text"
               className="search-input"
               value={form.easternArmenian}
@@ -85,7 +86,7 @@ export default function EnhancedSearchPage() {
           </label>
           <label className="enhanced-field">
             <span className="enhanced-field-label">{t('enhancedSearch.labelWestern')}</span>
-            <input
+            <SearchInputWithKeyboard
               type="text"
               className="search-input"
               value={form.westernArmenian}
@@ -96,7 +97,7 @@ export default function EnhancedSearchPage() {
           </label>
           <label className="enhanced-field enhanced-field-full">
             <span className="enhanced-field-label">{t('enhancedSearch.labelOriginalWord')}</span>
-            <input
+            <SearchInputWithKeyboard
               type="text"
               className="search-input"
               value={form.originalLanguageWord}
@@ -107,7 +108,7 @@ export default function EnhancedSearchPage() {
           </label>
           <label className="enhanced-field">
             <span className="enhanced-field-label">{t('enhancedSearch.labelAuthorAm')}</span>
-            <input
+            <SearchInputWithKeyboard
               type="text"
               className="search-input"
               value={form.authorArmenian}
@@ -118,7 +119,7 @@ export default function EnhancedSearchPage() {
           </label>
           <label className="enhanced-field">
             <span className="enhanced-field-label">{t('enhancedSearch.labelAuthorOrig')}</span>
-            <input
+            <SearchInputWithKeyboard
               type="text"
               className="search-input"
               value={form.authorOriginal}
@@ -129,7 +130,7 @@ export default function EnhancedSearchPage() {
           </label>
           <label className="enhanced-field">
             <span className="enhanced-field-label">{t('enhancedSearch.labelBookAm')}</span>
-            <input
+            <SearchInputWithKeyboard
               type="text"
               className="search-input"
               value={form.bookArmenian}
@@ -140,7 +141,7 @@ export default function EnhancedSearchPage() {
           </label>
           <label className="enhanced-field">
             <span className="enhanced-field-label">{t('enhancedSearch.labelBookOrig')}</span>
-            <input
+            <SearchInputWithKeyboard
               type="text"
               className="search-input"
               value={form.bookOriginal}
@@ -151,7 +152,7 @@ export default function EnhancedSearchPage() {
           </label>
           <label className="enhanced-field">
             <span className="enhanced-field-label">{t('enhancedSearch.labelTranslatorAm')}</span>
-            <input
+            <SearchInputWithKeyboard
               type="text"
               className="search-input"
               value={form.translatorArmenian}
@@ -162,7 +163,7 @@ export default function EnhancedSearchPage() {
           </label>
           <label className="enhanced-field">
             <span className="enhanced-field-label">{t('enhancedSearch.labelTranslatorOrig')}</span>
-            <input
+            <SearchInputWithKeyboard
               type="text"
               className="search-input"
               value={form.translatorOriginal}

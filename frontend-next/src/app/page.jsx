@@ -4,6 +4,7 @@ import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../contexts/LanguageContext'
 import { buildHomeWordSearchQuery } from '../lib/strapi-query'
+import SearchInputWithKeyboard from '../components/SearchInputWithKeyboard'
 
 export default function Home() {
   const { t } = useLanguage()
@@ -56,7 +57,7 @@ export default function Home() {
         <label style={{ display: 'block', marginBottom: '0.5rem', fontSize: '1rem', color: '#1e293b' }}>
           {t('common.searchLabel')}
         </label>
-        <input
+        <SearchInputWithKeyboard
           type="text"
           placeholder={t('common.searchPlaceholder')}
           value={query}

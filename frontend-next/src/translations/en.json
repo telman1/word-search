@@ -8,7 +8,11 @@
     "noResults": "No words found for",
     "searching": "Searching...",
     "searchPlaceholder": "search...",
-    "searchLabel": "Search"
+    "searchLabel": "Search",
+    "openArmenianKeyboard": "Open Armenian keyboard",
+    "armenianKeyboardTitle": "Armenian keyboard",
+    "keyboardSpace": "Space",
+    "dismissKeyboard": "Close keyboard"
   },
   "home": {
     "title": "Electronic Dictionary",

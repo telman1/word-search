@@ -8,7 +8,11 @@
     "noResults": "Ոչ մի բառ չի գտնվել",
     "searching": "Որոնվում է...",
     "searchPlaceholder": "որոնել...",
-    "searchLabel": "Որոնում"
+    "searchLabel": "Որոնում",
+    "openArmenianKeyboard": "Բացել հայերեն ստեղնաշար",
+    "armenianKeyboardTitle": "Հայերեն ստեղնաշար",
+    "keyboardSpace": "Բացատ",
+    "dismissKeyboard": "Փակել ստեղնաշարը"
   },
   "home": {
     "title": "Էլեկտրոնային բառարան",
