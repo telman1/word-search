@@ -727,7 +727,7 @@ export interface ApiWordWord extends Struct.CollectionTypeSchema {
     armenianWord: Schema.Attribute.String & Schema.Attribute.Required;
     author: Schema.Attribute.Relation<'manyToOne', 'api::author.author'>;
     book: Schema.Attribute.Relation<'manyToOne', 'api::book.book'>;
-    connections: Schema.Attribute.Relation<'manyToMany', 'api::word.word'>;
+    language: Schema.Attribute.Relation<'manyToOne', 'api::language.language'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;

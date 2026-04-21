@@ -45,10 +45,11 @@
       "relation": "manyToOne",
       "target": "api::book.book"
     },
-    "connections": {
+    "language": {
       "type": "relation",
-      "relation": "manyToMany",
-      "target": "api::word.word"
+      "relation": "manyToOne",
+      "target": "api::language.language",
+      "inversedBy": "words"
     }
   }
 }

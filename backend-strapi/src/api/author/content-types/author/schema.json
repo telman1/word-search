@@ -10,7 +10,16 @@
   "options": {
     "draftAndPublish": false
   },
-  "pluginOptions": {},
+  "pluginOptions": {
+    "content-manager": {
+      "listView": {
+        "defaultSort": {
+          "field": "id",
+          "order": "ASC"
+        }
+      }
+    }
+  },
   "attributes": {
     "nameArmenian": {
       "type": "string",

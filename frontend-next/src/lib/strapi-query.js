@@ -8,9 +8,9 @@ const WORD_ENTRY_POPULATE = {
   populate: {
     translator: true,
     book: {
-      // Strapi 5 REST: populate[book][populate][0]=author (docs). Object { author: true }
-      // serializes to [populate][author]=true and can 400 "Invalid key author at book" in prod.
-      populate: ['author'],
+      // populate[book][populate]=* — nested relations on Book (incl. author) without naming keys
+      // (avoids prod 400s from strict validation on populate[book][populate][author]=…).
+      populate: '*',
     },
   },
 }
