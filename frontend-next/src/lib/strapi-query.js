@@ -8,7 +8,11 @@ const WORD_ENTRY_POPULATE = {
   populate: {
     translator: true,
     book: {
-      populate: ['author'],
+      // Object form → populate[book][populate][author]=true (Strapi 5).
+      // Array ['author'] → populate[book][populate][0]=author → ValidationError.
+      populate: {
+        author: true,
+      },
     },
   },
 }
