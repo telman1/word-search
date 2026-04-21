@@ -666,6 +666,30 @@ export interface ApiWordEntryWordEntry extends Struct.CollectionTypeSchema {
     originalLanguageType: Schema.Attribute.Enumeration<
       ['english', 'french', 'german', 'italian', 'other']
     >;
+    partOfSpeech: Schema.Attribute.Enumeration<
+      [
+        '\u0563\u0578\u0575\u0561\u056F\u0561\u0576',
+        '\u0561\u056E\u0561\u056F\u0561\u0576',
+        '\u0569\u057E\u0561\u056F\u0561\u0576',
+        '\u0564\u0565\u0580\u0561\u0576\u0578\u0582\u0576',
+        '\u0562\u0561\u0575',
+        '\u0574\u0561\u056F\u0562\u0561\u0575',
+        '\u056F\u0561\u057A',
+        '\u0577\u0561\u0572\u056F\u0561\u057A',
+        '\u057E\u0565\u0580\u0561\u0562\u0565\u0580\u0561\u056F\u0561\u0576',
+        '\u0571\u0561\u0575\u0576\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576',
+      ]
+    >;
+    possessiveCompositionForm: Schema.Attribute.Enumeration<
+      [
+        '\u0565\u0580',
+        '\u0576\u0565\u0580',
+        '\u056B\u056F',
+        '\u0561\u0575\u0584',
+        '\u056B\u0576\u0584',
+        '\u0584',
+      ]
+    >;
     publishedAt: Schema.Attribute.DateTime;
     suggestedEquivalentArmenian: Schema.Attribute.String;
     suggestedEquivalentOriginal: Schema.Attribute.String;

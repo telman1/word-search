@@ -5,9 +5,10 @@ import Link from 'next/link'
 import { useLanguage } from '../contexts/LanguageContext'
 import { buildHomeWordSearchQuery } from '../lib/strapi-query'
 import SearchInputWithKeyboard from '../components/SearchInputWithKeyboard'
+import { labelPartOfSpeech, labelPossessiveForm } from '../lib/word-entry-enum-labels'
 
 export default function Home() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const [query, setQuery] = useState('')
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
@@ -91,6 +92,16 @@ export default function Home() {
                   <div className="suggested-equiv">{entry.suggestedEquivalentOriginal}</div>
                 )}
               </Link>
+              {entry.partOfSpeech && (
+                <div className="part-of-speech">
+                  {t('home.partOfSpeech')}: {labelPartOfSpeech(entry.partOfSpeech, language, t)}
+                </div>
+              )}
+              {entry.possessiveCompositionForm && (
+                <div className="possessive-form">
+                  {t('home.possessiveForm')}: {labelPossessiveForm(entry.possessiveCompositionForm, language, t)}
+                </div>
+              )}
               {entry.book?.author && (
                 <div className="author">
                   {t('home.author')}: {entry.book.author.nameArmenian}

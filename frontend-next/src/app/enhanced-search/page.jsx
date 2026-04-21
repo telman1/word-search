@@ -5,6 +5,12 @@ import Link from 'next/link'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { buildEnhancedWordEntriesQuery } from '../../lib/strapi-query'
 import SearchInputWithKeyboard from '../../components/SearchInputWithKeyboard'
+import {
+  PART_OF_SPEECH_VALUES,
+  POSSESSIVE_FORM_VALUES,
+  labelPartOfSpeech,
+  labelPossessiveForm,
+} from '../../lib/word-entry-enum-labels'
 
 function armenianWordDisplay(entry) {
   const e = entry.wordUnitEasternArmenian || ''
@@ -14,7 +20,7 @@ function armenianWordDisplay(entry) {
 }
 
 export default function EnhancedSearchPage() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const initial = useMemo(
     () => ({
       easternArmenian: '',
@@ -26,6 +32,8 @@ export default function EnhancedSearchPage() {
       bookOriginal: '',
       translatorArmenian: '',
       translatorOriginal: '',
+      partOfSpeech: '',
+      possessiveCompositionForm: '',
     }),
     []
   )
@@ -172,6 +180,36 @@ export default function EnhancedSearchPage() {
               autoComplete="off"
             />
           </label>
+          <label className="enhanced-field">
+            <span className="enhanced-field-label">{t('enhancedSearch.labelPartOfSpeech')}</span>
+            <select
+              className="search-input enhanced-select"
+              value={form.partOfSpeech}
+              onChange={(e) => setField('partOfSpeech', e.target.value)}
+            >
+              <option value="">{t('enhancedSearch.filterAny')}</option>
+              {PART_OF_SPEECH_VALUES.map((v) => (
+                <option key={v} value={v}>
+                  {labelPartOfSpeech(v, language, t)}
+                </option>
+              ))}
+            </select>
+          </label>
+          <label className="enhanced-field">
+            <span className="enhanced-field-label">{t('enhancedSearch.labelPossessiveForm')}</span>
+            <select
+              className="search-input enhanced-select"
+              value={form.possessiveCompositionForm}
+              onChange={(e) => setField('possessiveCompositionForm', e.target.value)}
+            >
+              <option value="">{t('enhancedSearch.filterAny')}</option>
+              {POSSESSIVE_FORM_VALUES.map((v) => (
+                <option key={v} value={v}>
+                  {labelPossessiveForm(v, language, t)}
+                </option>
+              ))}
+            </select>
+          </label>
         </div>
 
         {error && <div className="error">{error}</div>}
@@ -196,7 +234,7 @@ export default function EnhancedSearchPage() {
                 <div className="original-word">{entry.wordUnitOriginalLanguage}</div>
                 <div className="armenian-word">{armenianWordDisplay(entry)}</div>
               </Link>
-              <EnhancedResultFields entry={entry} t={t} />
+              <EnhancedResultFields entry={entry} t={t} language={language} />
             </article>
           ))}
         </div>
@@ -209,7 +247,7 @@ export default function EnhancedSearchPage() {
   )
 }
 
-function EnhancedResultFields({ entry, t }) {
+function EnhancedResultFields({ entry, t, language }) {
   const author = entry.book?.author
   const rows = []
 
@@ -264,6 +302,20 @@ function EnhancedResultFields({ entry, t }) {
       key: 'r10',
       label: t('enhancedSearch.result10'),
       value: entry.contextualPassageOriginal,
+    })
+  }
+  if (entry.partOfSpeech) {
+    rows.push({
+      key: 'r17',
+      label: t('enhancedSearch.result17'),
+      value: labelPartOfSpeech(entry.partOfSpeech, language, t),
+    })
+  }
+  if (entry.possessiveCompositionForm) {
+    rows.push({
+      key: 'r18',
+      label: t('enhancedSearch.result18'),
+      value: labelPossessiveForm(entry.possessiveCompositionForm, language, t),
     })
   }
   if (author?.nameArmenian) {

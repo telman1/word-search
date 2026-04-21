@@ -1,7 +1,65 @@
 const path = require('path');
 const fs = require('fs');
+const {
+  CANONICAL_AUTHORS,
+  CANONICAL_BOOKS,
+  CANONICAL_TRANSLATOR,
+} = require('../config/canonical-catalog');
 
 const PDF_SEPARATORS = [' – ', ' - ', ' — ', ' –', '- ', '– ', '–'];
+
+async function findAuthorByArmenianName(nameArmenian) {
+  const rows = await strapi.entityService.findMany('api::author.author', {
+    filters: { nameArmenian: { $eq: nameArmenian } },
+    limit: 1,
+  });
+  return rows[0] || null;
+}
+
+async function ensureCanonicalCatalog() {
+  const authorByName = new Map();
+  for (const a of CANONICAL_AUTHORS) {
+    let row = await findAuthorByArmenianName(a.nameArmenian);
+    if (!row) {
+      row = await strapi.entityService.create('api::author.author', { data: { ...a } });
+      console.log('Canonical catalog: created author', a.nameArmenian);
+    }
+    authorByName.set(a.nameArmenian, row);
+  }
+
+  for (const b of CANONICAL_BOOKS) {
+    const author = authorByName.get(b.authorNameArmenian);
+    if (!author) {
+      console.warn('Canonical catalog: missing author for book', b.nameArmenian, b.authorNameArmenian);
+      continue;
+    }
+    const existing = await strapi.entityService.findMany('api::book.book', {
+      filters: { nameArmenian: { $eq: b.nameArmenian } },
+      limit: 1,
+    });
+    if (existing.length) continue;
+    await strapi.entityService.create('api::book.book', {
+      data: {
+        nameArmenian: b.nameArmenian,
+        nameOriginalLanguage: b.nameOriginalLanguage,
+        originalLanguageType: b.originalLanguageType,
+        author: author.id,
+      },
+    });
+    console.log('Canonical catalog: created book', b.nameArmenian);
+  }
+
+  let tr = await strapi.entityService.findMany('api::translator.translator', {
+    filters: { nameArmenian: { $eq: CANONICAL_TRANSLATOR.nameArmenian } },
+    limit: 1,
+  });
+  if (!tr.length) {
+    await strapi.entityService.create('api::translator.translator', {
+      data: { ...CANONICAL_TRANSLATOR },
+    });
+    console.log('Canonical catalog: created translator', CANONICAL_TRANSLATOR.nameArmenian);
+  }
+}
 
 module.exports = async () => {
   // Optional: Clear all data and import from PDF-style text file
@@ -88,6 +146,8 @@ module.exports = async () => {
     }
   }
 
+  await ensureCanonicalCatalog();
+
   // Check if we already have word entries
   const wordEntryCount = await strapi.entityService.count('api::word-entry.word-entry');
   
@@ -98,36 +158,20 @@ module.exports = async () => {
 
   console.log('Bootstrapping sample data...');
 
-  // Create sample Author
-  const author = await strapi.entityService.create('api::author.author', {
-    data: {
-      nameArmenian: 'Օրինակ Հեղինակ',
-      nameOriginalLanguage: 'Sample Author',
-      originalLanguageType: 'english'
-    }
+  const sampleBookRows = await strapi.entityService.findMany('api::book.book', {
+    filters: { nameArmenian: { $eq: 'Գիտելիքի հնագիտությունը' } },
+    limit: 1,
   });
-  console.log('Created author:', author.id);
-
-  // Create sample Book (new schema)
-  const book = await strapi.entityService.create('api::book.book', {
-    data: {
-      nameArmenian: 'Օրինակ Գիրք',
-      nameOriginalLanguage: 'Sample Book',
-      originalLanguageType: 'english',
-      author: author.id
-    }
+  const sampleTrRows = await strapi.entityService.findMany('api::translator.translator', {
+    filters: { nameArmenian: { $eq: CANONICAL_TRANSLATOR.nameArmenian } },
+    limit: 1,
   });
-  console.log('Created book:', book.id);
-
-  // Create sample Translator (new schema)
-  const translator = await strapi.entityService.create('api::translator.translator', {
-    data: {
-      nameArmenian: 'Օրինակ Թարգմանիչ',
-      nameOriginalLanguage: 'Sample Translator',
-      originalLanguageType: 'english'
-    }
-  });
-  console.log('Created translator:', translator.id);
+  const book = sampleBookRows[0];
+  const translator = sampleTrRows[0];
+  if (!book || !translator) {
+    console.error('Bootstrap: canonical book or translator missing; cannot create sample word entries.');
+    return;
+  }
 
   // Sample word entries
   const wordEntries = [
@@ -141,7 +185,9 @@ module.exports = async () => {
       wordMeaningSense: 'A building for human habitation',
       contextualPassageArmenian: 'Ես ապրում եմ գեղեցիկ տան մեջ:',
       contextualPassageOriginal: 'I live in a beautiful house.',
-      originalLanguageType: 'english'
+      originalLanguageType: 'english',
+      partOfSpeech: 'գոյական',
+      possessiveCompositionForm: 'եր',
     },
     {
       wordUnitEasternArmenian: 'տուն',
@@ -151,7 +197,9 @@ module.exports = async () => {
       suggestedEquivalentOriginal: 'home',
       contextualPassageArmenian: 'Բարի վերադարձ տուն:',
       contextualPassageOriginal: 'Welcome home!',
-      originalLanguageType: 'english'
+      originalLanguageType: 'english',
+      partOfSpeech: 'գոյական',
+      possessiveCompositionForm: 'ներ',
     },
     {
       wordUnitEasternArmenian: 'տուն',
@@ -161,8 +209,10 @@ module.exports = async () => {
       suggestedEquivalentOriginal: 'maison',
       contextualPassageArmenian: 'Սա մեծ տուն է:',
       contextualPassageOriginal: 'C\'est une grande maison.',
-      originalLanguageType: 'french'
-    }
+      originalLanguageType: 'french',
+      partOfSpeech: 'գոյական',
+      possessiveCompositionForm: 'իկ',
+    },
   ];
 
   for (const entry of wordEntries) {

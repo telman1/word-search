@@ -5,9 +5,10 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useLanguage } from '../../../contexts/LanguageContext'
 import { buildWordEntryDetailQuery } from '../../../lib/strapi-query'
+import { labelPartOfSpeech, labelPossessiveForm } from '../../../lib/word-entry-enum-labels'
 
 export default function WordDetail() {
-  const { t } = useLanguage()
+  const { t, language } = useLanguage()
   const params = useParams()
   const [entry, setEntry] = useState(null)
   const [loading, setLoading] = useState(true)
@@ -78,6 +79,18 @@ export default function WordDetail() {
 
       <div className="word-info">
         <div className="info-grid">
+          {entry.partOfSpeech && (
+            <div className="info-item">
+              <div className="label">{t('word.partOfSpeech')}</div>
+              <div className="value">{labelPartOfSpeech(entry.partOfSpeech, language, t)}</div>
+            </div>
+          )}
+          {entry.possessiveCompositionForm && (
+            <div className="info-item">
+              <div className="label">{t('word.possessiveCompositionForm')}</div>
+              <div className="value">{labelPossessiveForm(entry.possessiveCompositionForm, language, t)}</div>
+            </div>
+          )}
           {entry.book?.author && (
             <div className="info-item">
               <div className="label">{t('word.author')}</div>

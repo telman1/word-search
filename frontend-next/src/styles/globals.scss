@@ -445,7 +445,7 @@ body::before {
       margin-bottom: 0.5rem;
     }
 
-    .book, .author, .translator {
+    .book, .author, .translator, .part-of-speech, .possessive-form {
       color: #473D3D;
       font-size: 0.9rem;
       margin-bottom: 0.5rem;
@@ -483,16 +483,6 @@ body::before {
       &:hover {
         background: #e2e8f0;
       }
-    }
-
-    .part-of-speech {
-      display: inline-block;
-      background: #e0f2fe;
-      color: #0369a1;
-      padding: 0.25rem 0.5rem;
-      border-radius: 4px;
-      font-size: 0.8rem;
-      margin-bottom: 0.5rem;
     }
 
     .relations {
@@ -822,6 +812,17 @@ body::before {
 
   .enhanced-field-full {
     grid-column: 1 / -1;
+  }
+
+  .enhanced-select {
+    width: 100%;
+    min-height: 2.75rem;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    background: #fff;
+    font-size: 1rem;
+    color: #1e293b;
   }
 
   .enhanced-search-actions {

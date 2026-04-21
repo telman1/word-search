@@ -56,6 +56,27 @@
     "originalLanguageType": {
       "type": "enumeration",
       "enum": ["english", "french", "german", "italian", "other"]
+    },
+    "partOfSpeech": {
+      "type": "enumeration",
+      "enum": [
+        "գոյական",
+        "ածական",
+        "թվական",
+        "դերանուն",
+        "բայ",
+        "մակբայ",
+        "կապ",
+        "շաղկապ",
+        "վերաբերական",
+        "ձայնարկություն"
+      ],
+      "enumName": "WordEntryPartOfSpeech"
+    },
+    "possessiveCompositionForm": {
+      "type": "enumeration",
+      "enum": ["եր", "ներ", "իկ", "այք", "ինք", "ք"],
+      "enumName": "WordEntryPossessiveForm"
     }
   }
 }

@@ -20,6 +20,8 @@
     "book": "Book",
     "author": "Author",
     "translator": "Translator",
+    "partOfSpeech": "Part of speech",
+    "possessiveForm": "Possessive form",
     "connectedWords": "Connected words:",
     "more": "more"
   },
@@ -82,6 +84,9 @@
     "labelBookOrig": "Book title (original language)",
     "labelTranslatorAm": "Translator’s name (Eastern / Western Armenian)",
     "labelTranslatorOrig": "Translator’s name (original language)",
+    "labelPartOfSpeech": "Part of speech",
+    "labelPossessiveForm": "Possessive composition form",
+    "filterAny": "Any",
     "phEastern": "Eastern Armenian word",
     "phWestern": "Western Armenian word",
     "phOriginalWord": "Word or phrase in the source language",
@@ -109,7 +114,9 @@
     "result13": "13. Book title (Eastern / Western Armenian)",
     "result14": "14. Book title (original language)",
     "result15": "15. Translator’s name (Eastern / Western Armenian)",
-    "result16": "16. Translator’s name (original language)"
+    "result16": "16. Translator’s name (original language)",
+    "result17": "17. Part of speech",
+    "result18": "18. Possessive composition form"
   },
   "word": {
     "loading": "Loading word...",
@@ -127,7 +134,29 @@
     "translatorCommentary": "Translator's commentary:",
     "wordMeaningSense": "Word meaning/sense:",
     "contextualPassageArmenian": "Contextual passage (Armenian):",
-    "contextualPassageOriginal": "Contextual passage (Original):"
+    "contextualPassageOriginal": "Contextual passage (Original):",
+    "partOfSpeech": "Part of speech:",
+    "possessiveCompositionForm": "Possessive composition form:",
+    "enumPartOfSpeech": {
+      "գոյական": "Noun",
+      "ածական": "Adjective",
+      "թվական": "Numeral",
+      "դերանուն": "Pronoun",
+      "բայ": "Verb",
+      "մակբայ": "Adverb",
+      "կապ": "Conjunction",
+      "շաղկապ": "Subordinating conjunction",
+      "վերաբերական": "Preposition",
+      "ձայնարկություն": "Interjection"
+    },
+    "enumPossessive": {
+      "եր": "-er",
+      "ներ": "-ner",
+      "իկ": "-ik",
+      "այք": "-ayk",
+      "ինք": "-ink",
+      "ք": "-k"
+    }
   }
 }
 
