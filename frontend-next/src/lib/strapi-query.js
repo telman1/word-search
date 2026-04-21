@@ -8,11 +8,9 @@ const WORD_ENTRY_POPULATE = {
   populate: {
     translator: true,
     book: {
-      // Object form → populate[book][populate][author]=true (Strapi 5).
-      // Array ['author'] → populate[book][populate][0]=author → ValidationError.
-      populate: {
-        author: true,
-      },
+      // Strapi 5 REST: populate[book][populate][0]=author (docs). Object { author: true }
+      // serializes to [populate][author]=true and can 400 "Invalid key author at book" in prod.
+      populate: ['author'],
     },
   },
 }
