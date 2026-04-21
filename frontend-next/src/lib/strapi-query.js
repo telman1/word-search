@@ -79,8 +79,6 @@ export function buildWordEntryDetailQuery() {
  *   bookOriginal: string,
  *   translatorArmenian: string,
  *   translatorOriginal: string,
- *   partOfSpeech: string,
- *   possessiveCompositionForm: string,
  * }} values
  */
 export function buildEnhancedWordEntriesQuery(values) {
@@ -93,15 +91,11 @@ export function buildEnhancedWordEntriesQuery(values) {
   const bookOrig = values.bookOriginal.trim()
   const trAm = values.translatorArmenian.trim()
   const trOrig = values.translatorOriginal.trim()
-  const pos = (values.partOfSpeech || '').trim()
-  const poss = (values.possessiveCompositionForm || '').trim()
 
   const filters = {}
   if (ea) filters.wordUnitEasternArmenian = { $containsi: ea }
   if (wa) filters.wordUnitWesternArmenian = { $containsi: wa }
   if (orig) filters.wordUnitOriginalLanguage = { $containsi: orig }
-  if (pos) filters.partOfSpeech = { $eq: pos }
-  if (poss) filters.possessiveCompositionForm = { $eq: poss }
 
   const authorFilters = {}
   if (authAm) authorFilters.nameArmenian = { $containsi: authAm }
