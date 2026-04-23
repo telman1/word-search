@@ -5,12 +5,13 @@ import Link from 'next/link'
 import { useLanguage } from '../contexts/LanguageContext'
 import { buildHomeWordSearchQuery } from '../lib/strapi-query'
 import SearchInputWithKeyboard from '../components/SearchInputWithKeyboard'
-import { formatPartOfSpeechList, labelPossessiveForm } from '../lib/word-entry-enum-labels'
+import { formatPartOfSpeechList, formatPluralFormationList } from '../lib/word-entry-enum-labels'
 import {
   formatPersonList,
   getEntryAuthors,
   getEntryTranslators,
   getPartOfSpeechValues,
+  getPluralFormationValues,
 } from '../lib/word-entry-display'
 
 export default function Home() {
@@ -88,6 +89,7 @@ export default function Home() {
             const authors = getEntryAuthors(entry)
             const translators = getEntryTranslators(entry)
             const partOfSpeechValues = getPartOfSpeechValues(entry)
+            const pluralFormationValues = getPluralFormationValues(entry)
             return (
             <div key={entry.documentId || entry.id} className="result-item">
               <Link href={`/word/${entry.documentId || entry.id}`} className="word-display">
@@ -107,9 +109,10 @@ export default function Home() {
                   {t('home.partOfSpeech')}: {formatPartOfSpeechList(partOfSpeechValues, language, t)}
                 </div>
               )}
-              {entry.possessiveCompositionForm && (
-                <div className="possessive-form">
-                  {t('home.possessiveForm')}: {labelPossessiveForm(entry.possessiveCompositionForm, language, t)}
+              {pluralFormationValues.length > 0 && (
+                <div className="plural-formation">
+                  {t('home.pluralFormation')}:{' '}
+                  {formatPluralFormationList(pluralFormationValues, language, t)}
                 </div>
               )}
               {authors.length > 0 && (

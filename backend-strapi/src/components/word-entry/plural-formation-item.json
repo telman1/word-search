@@ -1,0 +1,16 @@
+{
+  "collectionName": "components_word_entry_plural_formation_items",
+  "info": {
+    "displayName": "Plural formation",
+    "description": "One plural-formation option (add another for multiple)"
+  },
+  "options": {},
+  "attributes": {
+    "value": {
+      "type": "enumeration",
+      "required": true,
+      "enum": ["եր", "ներ", "իկ", "այք", "ինք", "ք"],
+      "enumName": "WordEntryPluralFormationItem"
+    }
+  }
+}

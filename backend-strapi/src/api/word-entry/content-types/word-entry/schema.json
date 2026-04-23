@@ -70,10 +70,10 @@
       "repeatable": true,
       "component": "word-entry.part-of-speech-item"
     },
-    "possessiveCompositionForm": {
-      "type": "enumeration",
-      "enum": ["եր", "ներ", "իկ", "այք", "ինք", "ք"],
-      "enumName": "WordEntryPossessiveForm"
+    "pluralFormations": {
+      "type": "component",
+      "repeatable": true,
+      "component": "word-entry.plural-formation-item"
     }
   }
 }
