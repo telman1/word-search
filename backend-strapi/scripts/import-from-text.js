@@ -9,8 +9,7 @@
  *   node scripts/import-from-text.js ./data/words.txt french
  *
  * The script will:
- * 1. Ensure the canonical catalog exists and wire every line to the current phase
- *    (Միշել Ֆուկո — Գիտելիքի հնագիտություն — Նազարեթ Կարոյան)
+ * 1. Create a Book and Translator for import (if none exist)
  * 2. Parse each line, split on – or -
  * 3. Create Word Entries (Eastern Armenian + Original only, rest empty)
  */
@@ -18,10 +17,6 @@
 const fs = require('fs');
 const path = require('path');
 const { createStrapi } = require('@strapi/strapi');
-const {
-  ensureCanonicalCatalog,
-  getPhaseWordEntryRelationIds,
-} = require('../config/ensure-canonical-catalog');
 
 const SEPARATORS = [' – ', ' - ', ' — ', ' –', '- '];
 
@@ -33,9 +28,49 @@ async function importFromFile(filePath, originalLanguageType = 'french') {
     const content = fs.readFileSync(path.resolve(filePath), 'utf-8');
     const lines = content.split('\n').map((l) => l.trim()).filter(Boolean);
 
-    await ensureCanonicalCatalog(app);
-    const { bookId, translatorId, authorId } = await getPhaseWordEntryRelationIds(app);
-    console.log('Using phase catalog: book id', bookId, 'translator', translatorId, 'author', authorId);
+    // Get or create Book and Translator
+    let books = await app.entityService.findMany('api::book.book', {});
+    let translators = await app.entityService.findMany('api::translator.translator', {});
+    let authors = await app.entityService.findMany('api::author.author', {});
+
+    if (authors.length === 0) {
+      const author = await app.entityService.create('api::author.author', {
+        data: {
+          nameArmenian: 'PDF Ներմուծում',
+          nameOriginalLanguage: 'PDF Import',
+          originalLanguageType: originalLanguageType,
+        },
+      });
+      authors = [author];
+      console.log('Created default Author.');
+    }
+
+    if (books.length === 0) {
+      const book = await app.entityService.create('api::book.book', {
+        data: {
+          nameArmenian: 'PDF Ներմուծում',
+          nameOriginalLanguage: 'PDF Import',
+          originalLanguageType: originalLanguageType,
+          author: authors[0].id,
+        },
+      });
+      books = [book];
+      console.log('Created default Book.');
+    }
+    if (translators.length === 0) {
+      const translator = await app.entityService.create('api::translator.translator', {
+        data: {
+          nameArmenian: 'PDF Ներմուծում',
+          nameOriginalLanguage: 'PDF Import',
+          originalLanguageType: originalLanguageType,
+        },
+      });
+      translators = [translator];
+      console.log('Created default Translator.');
+    }
+
+    const bookId = books[0].id;
+    const translatorId = translators[0].id;
 
     let created = 0;
     let skipped = 0;
@@ -66,7 +101,7 @@ async function importFromFile(filePath, originalLanguageType = 'french') {
           originalLanguageType: originalLanguageType,
           book: bookId,
           translators: [translatorId],
-          authors: [authorId],
+          authors: [authors[0].id],
         },
       });
       created++;

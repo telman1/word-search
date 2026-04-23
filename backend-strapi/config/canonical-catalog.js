@@ -21,9 +21,7 @@ module.exports.CANONICAL_AUTHORS = [
 /** authorNameArmenian must match an entry in CANONICAL_AUTHORS */
 module.exports.CANONICAL_BOOKS = [
   {
-    nameArmenian: 'Գիտելիքի հնագիտություն',
-    /** Seeded with ə-form in older DB; ensure-canonical migrates in place. */
-    legacyNameArmenian: 'Գիտելիքի հնագիտությունը',
+    nameArmenian: 'Գիտելիքի հնագիտությունը',
     nameOriginalLanguage: "L'Archéologie du savoir",
     originalLanguageType: 'french',
     authorNameArmenian: 'Միշել Ֆուկո',
@@ -90,15 +88,4 @@ module.exports.CANONICAL_TRANSLATOR = {
   nameArmenian: 'Նազարեթ Կարոյան',
   nameOriginalLanguage: 'Nazareth Karoyan',
   originalLanguageType: 'english',
-}
-
-/** Strapi `word-entry` relations for the current product phase (Foucault / this book / Karoyan). */
-const FOUCAULT_BOOK = module.exports.CANONICAL_BOOKS[0]
-module.exports.CURRENT_WORD_ENTRY_PHASE = {
-  authorNameArmenian: FOUCAULT_BOOK.authorNameArmenian,
-  bookNameArmenian: FOUCAULT_BOOK.nameArmenian,
-  bookNameOriginal: FOUCAULT_BOOK.nameOriginalLanguage,
-  translatorNameArmenian: module.exports.CANONICAL_TRANSLATOR.nameArmenian,
-  translatorNameOriginal: module.exports.CANONICAL_TRANSLATOR.nameOriginalLanguage,
-  authorNameOriginal: module.exports.CANONICAL_AUTHORS[0].nameOriginalLanguage,
 }

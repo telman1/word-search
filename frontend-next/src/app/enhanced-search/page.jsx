@@ -4,7 +4,6 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { buildEnhancedWordEntriesQuery } from '../../lib/strapi-query'
-import { CURRENT_WORD_ENTRY_PHASE } from '../../lib/phase-defaults'
 import { getEntryAuthors, getEntryTranslators } from '../../lib/word-entry-display'
 import SearchInputWithKeyboard from '../../components/SearchInputWithKeyboard'
 
@@ -17,20 +16,20 @@ function armenianWordDisplay(entry) {
 
 export default function EnhancedSearchPage() {
   const { t } = useLanguage()
-  const initial = useMemo(() => {
-    const p = CURRENT_WORD_ENTRY_PHASE
-    return {
+  const initial = useMemo(
+    () => ({
       easternArmenian: '',
       westernArmenian: '',
       originalLanguageWord: '',
-      authorArmenian: p.authorNameArmenian,
-      authorOriginal: p.authorNameOriginal,
-      bookArmenian: p.bookNameArmenian,
-      bookOriginal: p.bookNameOriginal,
-      translatorArmenian: p.translatorNameArmenian,
-      translatorOriginal: p.translatorNameOriginal,
-    }
-  }, [])
+      authorArmenian: '',
+      authorOriginal: '',
+      bookArmenian: '',
+      bookOriginal: '',
+      translatorArmenian: '',
+      translatorOriginal: '',
+    }),
+    []
+  )
   const [form, setForm] = useState(initial)
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
