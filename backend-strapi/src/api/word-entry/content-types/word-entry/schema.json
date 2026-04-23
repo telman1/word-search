@@ -18,10 +18,18 @@
       "target": "api::book.book",
       "required": true
     },
-    "translator": {
+    "translators": {
       "type": "relation",
-      "relation": "manyToOne",
+      "relation": "manyToMany",
       "target": "api::translator.translator",
+      "inversedBy": "wordEntries",
+      "required": true
+    },
+    "authors": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::author.author",
+      "inversedBy": "wordEntries",
       "required": true
     },
     "wordUnitEasternArmenian": {
@@ -57,21 +65,10 @@
       "type": "enumeration",
       "enum": ["english", "french", "german", "italian", "other"]
     },
-    "partOfSpeech": {
-      "type": "enumeration",
-      "enum": [
-        "գոյական",
-        "ածական",
-        "թվական",
-        "դերանուն",
-        "բայ",
-        "մակբայ",
-        "կապ",
-        "շաղկապ",
-        "վերաբերական",
-        "ձայնարկություն"
-      ],
-      "enumName": "WordEntryPartOfSpeech"
+    "partOfSpeeches": {
+      "type": "component",
+      "repeatable": true,
+      "component": "word-entry.part-of-speech-item"
     },
     "possessiveCompositionForm": {
       "type": "enumeration",

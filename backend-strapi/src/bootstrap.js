@@ -105,7 +105,14 @@ module.exports = async () => {
           }
           if (left && right) {
             await strapi.entityService.create('api::word-entry.word-entry', {
-              data: { wordUnitEasternArmenian: left, wordUnitOriginalLanguage: right, originalLanguageType: lang, book: book.id, translator: translator.id }
+              data: {
+                wordUnitEasternArmenian: left,
+                wordUnitOriginalLanguage: right,
+                originalLanguageType: lang,
+                book: book.id,
+                translators: [translator.id],
+                authors: [author.id],
+              },
             });
             count++;
           }
@@ -161,6 +168,7 @@ module.exports = async () => {
   const sampleBookRows = await strapi.entityService.findMany('api::book.book', {
     filters: { nameArmenian: { $eq: 'Գիտելիքի հնագիտությունը' } },
     limit: 1,
+    populate: { author: true },
   });
   const sampleTrRows = await strapi.entityService.findMany('api::translator.translator', {
     filters: { nameArmenian: { $eq: CANONICAL_TRANSLATOR.nameArmenian } },
@@ -168,8 +176,10 @@ module.exports = async () => {
   });
   const book = sampleBookRows[0];
   const translator = sampleTrRows[0];
-  if (!book || !translator) {
-    console.error('Bootstrap: canonical book or translator missing; cannot create sample word entries.');
+  const author = book.author && typeof book.author === 'object' ? book.author : null;
+  const authorId = author?.id ?? book.author;
+  if (!book || !translator || authorId == null) {
+    console.error('Bootstrap: canonical book, author, or translator missing; cannot create sample word entries.');
     return;
   }
 
@@ -186,7 +196,7 @@ module.exports = async () => {
       contextualPassageArmenian: 'Ես ապրում եմ գեղեցիկ տան մեջ:',
       contextualPassageOriginal: 'I live in a beautiful house.',
       originalLanguageType: 'english',
-      partOfSpeech: 'գոյական',
+      partOfSpeeches: [{ value: 'գոյական' }],
       possessiveCompositionForm: 'եր',
     },
     {
@@ -198,7 +208,7 @@ module.exports = async () => {
       contextualPassageArmenian: 'Բարի վերադարձ տուն:',
       contextualPassageOriginal: 'Welcome home!',
       originalLanguageType: 'english',
-      partOfSpeech: 'գոյական',
+      partOfSpeeches: [{ value: 'գոյական' }],
       possessiveCompositionForm: 'ներ',
     },
     {
@@ -210,7 +220,7 @@ module.exports = async () => {
       contextualPassageArmenian: 'Սա մեծ տուն է:',
       contextualPassageOriginal: 'C\'est une grande maison.',
       originalLanguageType: 'french',
-      partOfSpeech: 'գոյական',
+      partOfSpeeches: [{ value: 'գոյական' }],
       possessiveCompositionForm: 'իկ',
     },
   ];
@@ -220,7 +230,8 @@ module.exports = async () => {
       data: {
         ...entry,
         book: book.id,
-        translator: translator.id
+        translators: [translator.id],
+        authors: [authorId],
       }
     });
     console.log('Created word entry:', entry.wordUnitOriginalLanguage, '->', entry.wordUnitEasternArmenian);

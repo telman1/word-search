@@ -478,6 +478,16 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
   options: {
     draftAndPublish: false;
   };
+  pluginOptions: {
+    'content-manager': {
+      listView: {
+        defaultSort: {
+          field: 'id';
+          order: 'ASC';
+        };
+      };
+    };
+  };
   attributes: {
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
@@ -498,6 +508,10 @@ export interface ApiAuthorAuthor extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    wordEntries: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::word-entry.word-entry'
+    >;
   };
 }
 
@@ -635,6 +649,10 @@ export interface ApiTranslatorTranslator extends Struct.CollectionTypeSchema {
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    wordEntries: Schema.Attribute.Relation<
+      'manyToMany',
+      'api::word-entry.word-entry'
+    >;
   };
 }
 
@@ -650,6 +668,8 @@ export interface ApiWordEntryWordEntry extends Struct.CollectionTypeSchema {
     draftAndPublish: false;
   };
   attributes: {
+    authors: Schema.Attribute.Relation<'manyToMany', 'api::author.author'> &
+      Schema.Attribute.Required;
     book: Schema.Attribute.Relation<'manyToOne', 'api::book.book'> &
       Schema.Attribute.Required;
     contextualPassageArmenian: Schema.Attribute.Text;
@@ -666,19 +686,9 @@ export interface ApiWordEntryWordEntry extends Struct.CollectionTypeSchema {
     originalLanguageType: Schema.Attribute.Enumeration<
       ['english', 'french', 'german', 'italian', 'other']
     >;
-    partOfSpeech: Schema.Attribute.Enumeration<
-      [
-        '\u0563\u0578\u0575\u0561\u056F\u0561\u0576',
-        '\u0561\u056E\u0561\u056F\u0561\u0576',
-        '\u0569\u057E\u0561\u056F\u0561\u0576',
-        '\u0564\u0565\u0580\u0561\u0576\u0578\u0582\u0576',
-        '\u0562\u0561\u0575',
-        '\u0574\u0561\u056F\u0562\u0561\u0575',
-        '\u056F\u0561\u057A',
-        '\u0577\u0561\u0572\u056F\u0561\u057A',
-        '\u057E\u0565\u0580\u0561\u0562\u0565\u0580\u0561\u056F\u0561\u0576',
-        '\u0571\u0561\u0575\u0576\u0561\u0580\u056F\u0578\u0582\u0569\u0575\u0578\u0582\u0576',
-      ]
+    partOfSpeeches: Schema.Attribute.Component<
+      'word-entry.part-of-speech-item',
+      true
     >;
     possessiveCompositionForm: Schema.Attribute.Enumeration<
       [
@@ -693,12 +703,12 @@ export interface ApiWordEntryWordEntry extends Struct.CollectionTypeSchema {
     publishedAt: Schema.Attribute.DateTime;
     suggestedEquivalentArmenian: Schema.Attribute.String;
     suggestedEquivalentOriginal: Schema.Attribute.String;
-    translator: Schema.Attribute.Relation<
-      'manyToOne',
+    translatorCommentary: Schema.Attribute.Text;
+    translators: Schema.Attribute.Relation<
+      'manyToMany',
       'api::translator.translator'
     > &
       Schema.Attribute.Required;
-    translatorCommentary: Schema.Attribute.Text;
     updatedAt: Schema.Attribute.DateTime;
     updatedBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
@@ -727,10 +737,10 @@ export interface ApiWordWord extends Struct.CollectionTypeSchema {
     armenianWord: Schema.Attribute.String & Schema.Attribute.Required;
     author: Schema.Attribute.Relation<'manyToOne', 'api::author.author'>;
     book: Schema.Attribute.Relation<'manyToOne', 'api::book.book'>;
-    language: Schema.Attribute.Relation<'manyToOne', 'api::language.language'>;
     createdAt: Schema.Attribute.DateTime;
     createdBy: Schema.Attribute.Relation<'oneToOne', 'admin::user'> &
       Schema.Attribute.Private;
+    language: Schema.Attribute.Relation<'manyToOne', 'api::language.language'>;
     locale: Schema.Attribute.String & Schema.Attribute.Private;
     localizations: Schema.Attribute.Relation<'oneToMany', 'api::word.word'> &
       Schema.Attribute.Private;

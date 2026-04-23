@@ -4,6 +4,7 @@ import { useState, useMemo } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { buildEnhancedWordEntriesQuery } from '../../lib/strapi-query'
+import { getEntryAuthors, getEntryTranslators } from '../../lib/word-entry-display'
 import SearchInputWithKeyboard from '../../components/SearchInputWithKeyboard'
 
 function armenianWordDisplay(entry) {
@@ -210,7 +211,8 @@ export default function EnhancedSearchPage() {
 }
 
 function EnhancedResultFields({ entry, t }) {
-  const author = entry.book?.author
+  const authors = getEntryAuthors(entry)
+  const translators = getEntryTranslators(entry)
   const rows = []
 
   const w = armenianWordDisplay(entry)
@@ -266,18 +268,20 @@ function EnhancedResultFields({ entry, t }) {
       value: entry.contextualPassageOriginal,
     })
   }
-  if (author?.nameArmenian) {
+  const authorAm = authors.map((a) => a.nameArmenian).filter(Boolean).join('; ')
+  if (authorAm) {
     rows.push({
       key: 'r11',
       label: t('enhancedSearch.result11'),
-      value: author.nameArmenian,
+      value: authorAm,
     })
   }
-  if (author?.nameOriginalLanguage) {
+  const authorOrig = authors.map((a) => a.nameOriginalLanguage).filter(Boolean).join('; ')
+  if (authorOrig) {
     rows.push({
       key: 'r12',
       label: t('enhancedSearch.result12'),
-      value: author.nameOriginalLanguage,
+      value: authorOrig,
     })
   }
   if (entry.book?.nameArmenian) {
@@ -294,18 +298,20 @@ function EnhancedResultFields({ entry, t }) {
       value: entry.book.nameOriginalLanguage,
     })
   }
-  if (entry.translator?.nameArmenian) {
+  const translatorAm = translators.map((tr) => tr.nameArmenian).filter(Boolean).join('; ')
+  if (translatorAm) {
     rows.push({
       key: 'r15',
       label: t('enhancedSearch.result15'),
-      value: entry.translator.nameArmenian,
+      value: translatorAm,
     })
   }
-  if (entry.translator?.nameOriginalLanguage) {
+  const trOrig = translators.map((tr) => tr.nameOriginalLanguage).filter(Boolean).join('; ')
+  if (trOrig) {
     rows.push({
       key: 'r16',
       label: t('enhancedSearch.result16'),
-      value: entry.translator.nameOriginalLanguage,
+      value: trOrig,
     })
   }
 

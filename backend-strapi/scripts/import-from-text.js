@@ -100,7 +100,8 @@ async function importFromFile(filePath, originalLanguageType = 'french') {
           wordUnitOriginalLanguage: right,
           originalLanguageType: originalLanguageType,
           book: bookId,
-          translator: translatorId,
+          translators: [translatorId],
+          authors: [authors[0].id],
         },
       });
       created++;

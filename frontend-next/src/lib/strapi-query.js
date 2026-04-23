@@ -6,7 +6,9 @@
 
 const WORD_ENTRY_POPULATE = {
   populate: {
-    translator: true,
+    translators: true,
+    authors: true,
+    partOfSpeeches: true,
     book: {
       // populate[book][populate]=* — nested relations on Book (incl. author) without naming keys
       // (avoids prod 400s from strict validation on populate[book][populate][author]=…).
@@ -103,7 +105,7 @@ export function buildEnhancedWordEntriesQuery(values) {
   if (bookAm) bookFilters.nameArmenian = { $containsi: bookAm }
   if (bookOrig) bookFilters.nameOriginalLanguage = { $containsi: bookOrig }
   if (Object.keys(authorFilters).length > 0) {
-    bookFilters.author = authorFilters
+    filters.authors = authorFilters
   }
   if (Object.keys(bookFilters).length > 0) {
     filters.book = bookFilters
@@ -113,7 +115,7 @@ export function buildEnhancedWordEntriesQuery(values) {
   if (trAm) translatorFilters.nameArmenian = { $containsi: trAm }
   if (trOrig) translatorFilters.nameOriginalLanguage = { $containsi: trOrig }
   if (Object.keys(translatorFilters).length > 0) {
-    filters.translator = translatorFilters
+    filters.translators = translatorFilters
   }
 
   return stringifyStrapi({

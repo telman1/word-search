@@ -5,7 +5,13 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useLanguage } from '../../../contexts/LanguageContext'
 import { buildWordEntryDetailQuery } from '../../../lib/strapi-query'
-import { labelPartOfSpeech, labelPossessiveForm } from '../../../lib/word-entry-enum-labels'
+import { formatPartOfSpeechList, labelPossessiveForm } from '../../../lib/word-entry-enum-labels'
+import {
+  formatPersonList,
+  getEntryAuthors,
+  getEntryTranslators,
+  getPartOfSpeechValues,
+} from '../../../lib/word-entry-display'
 
 export default function WordDetail() {
   const { t, language } = useLanguage()
@@ -64,6 +70,10 @@ export default function WordDetail() {
     return <div className="error">{t('word.notFound')}</div>
   }
 
+  const authors = getEntryAuthors(entry)
+  const translators = getEntryTranslators(entry)
+  const partOfSpeechValues = getPartOfSpeechValues(entry)
+
   return (
     <div className="word-detail">
       <div className="word-header">
@@ -79,10 +89,10 @@ export default function WordDetail() {
 
       <div className="word-info">
         <div className="info-grid">
-          {entry.partOfSpeech && (
+          {partOfSpeechValues.length > 0 && (
             <div className="info-item">
               <div className="label">{t('word.partOfSpeech')}</div>
-              <div className="value">{labelPartOfSpeech(entry.partOfSpeech, language, t)}</div>
+              <div className="value">{formatPartOfSpeechList(partOfSpeechValues, language, t)}</div>
             </div>
           )}
           {entry.possessiveCompositionForm && (
@@ -91,13 +101,10 @@ export default function WordDetail() {
               <div className="value">{labelPossessiveForm(entry.possessiveCompositionForm, language, t)}</div>
             </div>
           )}
-          {entry.book?.author && (
+          {authors.length > 0 && (
             <div className="info-item">
               <div className="label">{t('word.author')}</div>
-              <div className="value">
-                {entry.book.author.nameArmenian}
-                {entry.book.author.nameOriginalLanguage && ` (${entry.book.author.nameOriginalLanguage})`}
-              </div>
+              <div className="value">{formatPersonList(authors)}</div>
             </div>
           )}
           {entry.book && (
@@ -109,13 +116,10 @@ export default function WordDetail() {
               </div>
             </div>
           )}
-          {entry.translator && (
+          {translators.length > 0 && (
             <div className="info-item">
               <div className="label">{t('word.translator')}</div>
-              <div className="value">
-                {entry.translator.nameArmenian}
-                {entry.translator.nameOriginalLanguage && ` (${entry.translator.nameOriginalLanguage})`}
-              </div>
+              <div className="value">{formatPersonList(translators)}</div>
             </div>
           )}
         </div>

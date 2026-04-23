@@ -5,7 +5,13 @@ import Link from 'next/link'
 import { useLanguage } from '../contexts/LanguageContext'
 import { buildHomeWordSearchQuery } from '../lib/strapi-query'
 import SearchInputWithKeyboard from '../components/SearchInputWithKeyboard'
-import { labelPartOfSpeech, labelPossessiveForm } from '../lib/word-entry-enum-labels'
+import { formatPartOfSpeechList, labelPossessiveForm } from '../lib/word-entry-enum-labels'
+import {
+  formatPersonList,
+  getEntryAuthors,
+  getEntryTranslators,
+  getPartOfSpeechValues,
+} from '../lib/word-entry-display'
 
 export default function Home() {
   const { t, language } = useLanguage()
@@ -78,7 +84,11 @@ export default function Home() {
 
       {results.length > 0 && (
         <div className="results-container">
-          {results.map((entry) => (
+          {results.map((entry) => {
+            const authors = getEntryAuthors(entry)
+            const translators = getEntryTranslators(entry)
+            const partOfSpeechValues = getPartOfSpeechValues(entry)
+            return (
             <div key={entry.documentId || entry.id} className="result-item">
               <Link href={`/word/${entry.documentId || entry.id}`} className="word-display">
                 <div className="original-word">{entry.wordUnitOriginalLanguage}</div>
@@ -92,9 +102,9 @@ export default function Home() {
                   <div className="suggested-equiv">{entry.suggestedEquivalentOriginal}</div>
                 )}
               </Link>
-              {entry.partOfSpeech && (
+              {partOfSpeechValues.length > 0 && (
                 <div className="part-of-speech">
-                  {t('home.partOfSpeech')}: {labelPartOfSpeech(entry.partOfSpeech, language, t)}
+                  {t('home.partOfSpeech')}: {formatPartOfSpeechList(partOfSpeechValues, language, t)}
                 </div>
               )}
               {entry.possessiveCompositionForm && (
@@ -102,20 +112,22 @@ export default function Home() {
                   {t('home.possessiveForm')}: {labelPossessiveForm(entry.possessiveCompositionForm, language, t)}
                 </div>
               )}
-              {entry.book?.author && (
+              {authors.length > 0 && (
                 <div className="author">
-                  {t('home.author')}: {entry.book.author.nameArmenian}
-                  {entry.book.author.nameOriginalLanguage && ` (${entry.book.author.nameOriginalLanguage})`}
+                  {t('home.author')}: {formatPersonList(authors)}
                 </div>
               )}
               {entry.book && (
                 <div className="book">{t('home.book')}: {entry.book.nameArmenian} ({entry.book.nameOriginalLanguage})</div>
               )}
-              {entry.translator && (
-                <div className="translator">{t('home.translator')}: {entry.translator.nameArmenian} ({entry.translator.nameOriginalLanguage})</div>
+              {translators.length > 0 && (
+                <div className="translator">
+                  {t('home.translator')}: {formatPersonList(translators)}
+                </div>
               )}
             </div>
-          ))}
+            )
+          })}
         </div>
       )}
 

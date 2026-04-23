@@ -24,6 +24,12 @@
       "type": "enumeration",
       "enum": ["english", "french", "german", "italian", "other"],
       "required": true
+    },
+    "wordEntries": {
+      "type": "relation",
+      "relation": "manyToMany",
+      "target": "api::word-entry.word-entry",
+      "mappedBy": "translators"
     }
   }
 }

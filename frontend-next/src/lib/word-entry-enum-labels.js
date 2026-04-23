@@ -31,6 +31,19 @@ export function labelPartOfSpeech(value, language, t) {
 }
 
 /**
+ * @param {string[]} values
+ * @param {'en' | 'hy'} language
+ * @param {(key: string) => string} t
+ */
+export function formatPartOfSpeechList(values, language, t) {
+  if (!values?.length) return ''
+  return values
+    .map((v) => labelPartOfSpeech(v, language, t))
+    .filter(Boolean)
+    .join(', ')
+}
+
+/**
  * @param {string | undefined} value
  * @param {'en' | 'hy'} language
  * @param {(key: string) => string} t
