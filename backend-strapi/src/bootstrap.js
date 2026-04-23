@@ -145,7 +145,7 @@ module.exports = async () => {
       contextualPassageOriginal: 'I live in a beautiful house.',
       originalLanguageType: 'english',
       partOfSpeeches: [{ value: 'գոյական' }],
-      pluralFormations: [{ value: 'եր' }],
+      possessiveCompositionForm: 'եր',
     },
     {
       wordUnitEasternArmenian: 'տուն',
@@ -157,7 +157,7 @@ module.exports = async () => {
       contextualPassageOriginal: 'Welcome home!',
       originalLanguageType: 'english',
       partOfSpeeches: [{ value: 'գոյական' }],
-      pluralFormations: [{ value: 'ներ' }],
+      possessiveCompositionForm: 'ներ',
     },
     {
       wordUnitEasternArmenian: 'տուն',
@@ -169,7 +169,7 @@ module.exports = async () => {
       contextualPassageOriginal: 'C\'est une grande maison.',
       originalLanguageType: 'french',
       partOfSpeeches: [{ value: 'գոյական' }],
-      pluralFormations: [{ value: 'իկ' }],
+      possessiveCompositionForm: 'իկ',
     },
   ];
 

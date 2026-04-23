@@ -21,7 +21,7 @@
     "author": "Հեղինակ",
     "translator": "Թարգմանիչ",
     "partOfSpeech": "Խոսքի մաս",
-    "pluralFormation": "Բայական/հոգնակի",
+    "possessiveForm": "Հոգնակիի կազմության ձև",
     "connectedWords": "Կապակցված բառեր:",
     "more": "ավելին"
   },
@@ -85,7 +85,7 @@
     "labelTranslatorAm": "Թարգմանչի անունը (արևելահայերեն / արևմտահայերեն)",
     "labelTranslatorOrig": "Թարգմանչի անունը բնագրային լեզվով",
     "labelPartOfSpeech": "Խոսքի մաս",
-    "labelPluralFormation": "Բայական/հոգնակի",
+    "labelPossessiveForm": "Հոգնակիի կազմության ձև",
     "filterAny": "Ցանկացած",
     "phEastern": "արևելահայերեն բառը",
     "phWestern": "արևմտահայերեն բառը",
@@ -116,7 +116,7 @@
     "result15": "15. Թարգմանչի անունը (արևելահայերեն / արևմտահայերեն)",
     "result16": "16. Թարգմանչի անունը բնագրային լեզվով",
     "result17": "17. Խոսքի մաս",
-    "result18": "18. Բայական/հոգնակի"
+    "result18": "18. Հոգնակիի կազմության ձև"
   },
   "word": {
     "loading": "Բեռնվում է բառը...",
@@ -136,7 +136,7 @@
     "contextualPassageArmenian": "Կոնտեքստային հատված (հայերեն):",
     "contextualPassageOriginal": "Կոնտեքստային հատված (բնօրինակ):",
     "partOfSpeech": "Խոսքի մաս:",
-    "pluralFormation": "Բայական/հոգնակի:"
+    "possessiveCompositionForm": "Հոգնակիի կազմության ձև:"
   }
 }
 

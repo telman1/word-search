@@ -33,10 +33,3 @@ export function getPartOfSpeechValues(entry) {
   if (!Array.isArray(items) || !items.length) return []
   return items.map((i) => i?.value).filter(Boolean)
 }
-
-/** @param {object} entry */
-export function getPluralFormationValues(entry) {
-  const items = entry?.pluralFormations
-  if (!Array.isArray(items) || !items.length) return []
-  return items.map((i) => i?.value).filter(Boolean)
-}
