@@ -12,6 +12,12 @@ import {
   getEntryTranslators,
   getPartOfSpeechValues,
 } from '../../../lib/word-entry-display'
+import { formatOriginalLanguageBilingual } from '../../../lib/original-language-labels'
+
+function hasDisplayText(value) {
+  if (value == null) return false
+  return String(value).trim().length > 0
+}
 
 export default function WordDetail() {
   const { t, language } = useLanguage()
@@ -83,7 +89,9 @@ export default function WordDetail() {
           {entry.wordUnitWesternArmenian && ` / ${entry.wordUnitWesternArmenian}`}
         </h2>
         {entry.originalLanguageType && (
-          <div className="language">{entry.originalLanguageType}</div>
+          <div className="language">
+            {formatOriginalLanguageBilingual(entry.originalLanguageType)}
+          </div>
         )}
       </div>
 
@@ -107,15 +115,17 @@ export default function WordDetail() {
               <div className="value">{formatPersonList(authors)}</div>
             </div>
           )}
-          {entry.book && (
-            <div className="info-item">
-              <div className="label">{t('word.book')}</div>
-              <div className="value">
-                {entry.book.nameArmenian}
-                {entry.book.nameOriginalLanguage && ` (${entry.book.nameOriginalLanguage})`}
+          {entry.book &&
+            (hasDisplayText(entry.book.nameArmenian) ||
+              hasDisplayText(entry.book.nameOriginalLanguage)) && (
+              <div className="info-item">
+                <div className="label">{t('word.book')}</div>
+                <div className="value">
+                  {entry.book.nameArmenian}
+                  {entry.book.nameOriginalLanguage && ` (${entry.book.nameOriginalLanguage})`}
+                </div>
               </div>
-            </div>
-          )}
+            )}
           {translators.length > 0 && (
             <div className="info-item">
               <div className="label">{t('word.translator')}</div>
@@ -124,40 +134,54 @@ export default function WordDetail() {
           )}
         </div>
 
-        <div className="info-item" style={{ marginTop: '1rem' }}>
-          <div className="label">{t('word.wordUnitWesternArmenian')}</div>
-          <div className="value">{entry.wordUnitWesternArmenian || ''}</div>
-        </div>
+        {hasDisplayText(entry.wordUnitWesternArmenian) && (
+          <div className="info-item" style={{ marginTop: '1rem' }}>
+            <div className="label">{t('word.wordUnitWesternArmenian')}</div>
+            <div className="value">{entry.wordUnitWesternArmenian}</div>
+          </div>
+        )}
 
-        <div className="info-item" style={{ marginTop: '1rem' }}>
-          <div className="label">{t('word.suggestedEquivalentArmenian')}</div>
-          <div className="value">{entry.suggestedEquivalentArmenian || ''}</div>
-        </div>
+        {hasDisplayText(entry.suggestedEquivalentArmenian) && (
+          <div className="info-item" style={{ marginTop: '1rem' }}>
+            <div className="label">{t('word.suggestedEquivalentArmenian')}</div>
+            <div className="value">{entry.suggestedEquivalentArmenian}</div>
+          </div>
+        )}
 
-        <div className="info-item" style={{ marginTop: '1rem' }}>
-          <div className="label">{t('word.suggestedEquivalentOriginal')}</div>
-          <div className="value">{entry.suggestedEquivalentOriginal || ''}</div>
-        </div>
+        {hasDisplayText(entry.suggestedEquivalentOriginal) && (
+          <div className="info-item" style={{ marginTop: '1rem' }}>
+            <div className="label">{t('word.suggestedEquivalentOriginal')}</div>
+            <div className="value">{entry.suggestedEquivalentOriginal}</div>
+          </div>
+        )}
 
-        <div className="info-item" style={{ marginTop: '1rem' }}>
-          <div className="label">{t('word.translatorCommentary')}</div>
-          <div className="value">{entry.translatorCommentary || ''}</div>
-        </div>
+        {hasDisplayText(entry.translatorCommentary) && (
+          <div className="info-item" style={{ marginTop: '1rem' }}>
+            <div className="label">{t('word.translatorCommentary')}</div>
+            <div className="value">{entry.translatorCommentary}</div>
+          </div>
+        )}
 
-        <div className="info-item" style={{ marginTop: '1rem' }}>
-          <div className="label">{t('word.wordMeaningSense')}</div>
-          <div className="value">{entry.wordMeaningSense || ''}</div>
-        </div>
+        {hasDisplayText(entry.wordMeaningSense) && (
+          <div className="info-item" style={{ marginTop: '1rem' }}>
+            <div className="label">{t('word.wordMeaningSense')}</div>
+            <div className="value">{entry.wordMeaningSense}</div>
+          </div>
+        )}
 
-        <div className="info-item" style={{ marginTop: '1rem' }}>
-          <div className="label">{t('word.contextualPassageArmenian')}</div>
-          <div className="value">{entry.contextualPassageArmenian || ''}</div>
-        </div>
+        {hasDisplayText(entry.contextualPassageArmenian) && (
+          <div className="info-item" style={{ marginTop: '1rem' }}>
+            <div className="label">{t('word.contextualPassageArmenian')}</div>
+            <div className="value">{entry.contextualPassageArmenian}</div>
+          </div>
+        )}
 
-        <div className="info-item" style={{ marginTop: '1rem' }}>
-          <div className="label">{t('word.contextualPassageOriginal')}</div>
-          <div className="value">{entry.contextualPassageOriginal || ''}</div>
-        </div>
+        {hasDisplayText(entry.contextualPassageOriginal) && (
+          <div className="info-item" style={{ marginTop: '1rem' }}>
+            <div className="label">{t('word.contextualPassageOriginal')}</div>
+            <div className="value">{entry.contextualPassageOriginal}</div>
+          </div>
+        )}
       </div>
 
       <div style={{ marginTop: '2rem', textAlign: 'center' }}>
