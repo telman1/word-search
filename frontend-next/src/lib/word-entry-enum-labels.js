@@ -13,7 +13,7 @@ export const PART_OF_SPEECH_VALUES = [
   'ձայնարկություն',
 ]
 
-export const POSSESSIVE_FORM_VALUES = ['եր', 'ներ', 'իկ', 'այք', 'ինք', 'ք']
+export const PLURAL_FORMATION_VALUES = ['եր', 'ներ', 'իկ', 'այք', 'ինք', 'ք']
 
 /**
  * @param {string | undefined} value
@@ -48,12 +48,25 @@ export function formatPartOfSpeechList(values, language, t) {
  * @param {'en' | 'hy'} language
  * @param {(key: string) => string} t
  */
-export function labelPossessiveForm(value, language, t) {
+export function labelPluralFormation(value, language, t) {
   if (!value) return ''
   if (language === 'en') {
-    const k = `word.enumPossessive.${value}`
+    const k = `word.enumPluralFormation.${value}`
     const out = t(k)
     return out !== k ? out : value
   }
   return value
+}
+
+/**
+ * @param {string[] | undefined} values
+ * @param {'en' | 'hy'} language
+ * @param {(key: string) => string} t
+ */
+export function formatPluralFormationList(values, language, t) {
+  if (!values?.length) return ''
+  return values
+    .map((v) => labelPluralFormation(v, language, t))
+    .filter(Boolean)
+    .join(', ')
 }

@@ -21,7 +21,7 @@
     "author": "Author",
     "translator": "Translator",
     "partOfSpeech": "Part of speech",
-    "possessiveForm": "Possessive form",
+    "pluralFormation": "Plural formation",
     "connectedWords": "Connected words:",
     "more": "more"
   },
@@ -85,7 +85,7 @@
     "labelTranslatorAm": "Translator’s name (Eastern / Western Armenian)",
     "labelTranslatorOrig": "Translator’s name (original language)",
     "labelPartOfSpeech": "Part of speech",
-    "labelPossessiveForm": "Possessive composition form",
+    "labelPluralFormation": "Plural formation",
     "filterAny": "Any",
     "phEastern": "Eastern Armenian word",
     "phWestern": "Western Armenian word",
@@ -116,7 +116,7 @@
     "result15": "15. Translator’s name (Eastern / Western Armenian)",
     "result16": "16. Translator’s name (original language)",
     "result17": "17. Part of speech",
-    "result18": "18. Possessive composition form"
+    "result18": "18. Plural formation"
   },
   "word": {
     "loading": "Loading word...",
@@ -136,7 +136,7 @@
     "contextualPassageArmenian": "Contextual passage (Armenian):",
     "contextualPassageOriginal": "Contextual passage (Original):",
     "partOfSpeech": "Part of speech:",
-    "possessiveCompositionForm": "Possessive composition form:",
+    "pluralFormation": "Plural formation:",
     "enumPartOfSpeech": {
       "գոյական": "Noun",
       "ածական": "Adjective",
@@ -149,7 +149,7 @@
       "վերաբերական": "Preposition",
       "ձայնարկություն": "Interjection"
     },
-    "enumPossessive": {
+    "enumPluralFormation": {
       "եր": "-er",
       "ներ": "-ner",
       "իկ": "-ik",
