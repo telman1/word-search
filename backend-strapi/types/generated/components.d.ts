@@ -25,10 +25,32 @@ export interface WordEntryPartOfSpeechItem extends Struct.ComponentSchema {
   };
 }
 
+export interface WordEntryPluralFormationItem extends Struct.ComponentSchema {
+  collectionName: 'components_word_entry_plural_formation_items';
+  info: {
+    description: 'One plural-formation option (add another for multiple)';
+    displayName: 'Plural formation';
+  };
+  attributes: {
+    value: Schema.Attribute.Enumeration<
+      [
+        '\u0565\u0580',
+        '\u0576\u0565\u0580',
+        '\u056B\u056F',
+        '\u0561\u0575\u0584',
+        '\u056B\u0576\u0584',
+        '\u0584',
+      ]
+    > &
+      Schema.Attribute.Required;
+  };
+}
+
 declare module '@strapi/strapi' {
   export module Public {
     export interface ComponentSchemas {
       'word-entry.part-of-speech-item': WordEntryPartOfSpeechItem;
+      'word-entry.plural-formation-item': WordEntryPluralFormationItem;
     }
   }
 }
