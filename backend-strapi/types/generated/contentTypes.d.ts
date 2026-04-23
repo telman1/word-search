@@ -690,9 +690,15 @@ export interface ApiWordEntryWordEntry extends Struct.CollectionTypeSchema {
       'word-entry.part-of-speech-item',
       true
     >;
-    pluralFormations: Schema.Attribute.Component<
-      'word-entry.plural-formation-item',
-      true
+    possessiveCompositionForm: Schema.Attribute.Enumeration<
+      [
+        '\u0565\u0580',
+        '\u0576\u0565\u0580',
+        '\u056B\u056F',
+        '\u0561\u0575\u0584',
+        '\u056B\u0576\u0584',
+        '\u0584',
+      ]
     >;
     publishedAt: Schema.Attribute.DateTime;
     suggestedEquivalentArmenian: Schema.Attribute.String;

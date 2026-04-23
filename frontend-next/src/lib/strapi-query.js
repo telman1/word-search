@@ -11,7 +11,6 @@ const WORD_ENTRY_POPULATE = {
     translators: true,
     authors: true,
     partOfSpeeches: true,
-    pluralFormations: true,
     book: {
       // populate[book][populate]=* — nested relations on Book (incl. author) without naming keys
       // (avoids prod 400s from strict validation on populate[book][populate][author]=…).

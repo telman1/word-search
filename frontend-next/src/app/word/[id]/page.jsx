@@ -5,13 +5,12 @@ import { useParams } from 'next/navigation'
 import Link from 'next/link'
 import { useLanguage } from '../../../contexts/LanguageContext'
 import { buildWordEntryDetailQuery } from '../../../lib/strapi-query'
-import { formatPartOfSpeechList, formatPluralFormationList } from '../../../lib/word-entry-enum-labels'
+import { formatPartOfSpeechList, labelPossessiveForm } from '../../../lib/word-entry-enum-labels'
 import {
   formatPersonList,
   getEntryAuthors,
   getEntryTranslators,
   getPartOfSpeechValues,
-  getPluralFormationValues,
 } from '../../../lib/word-entry-display'
 import { formatOriginalLanguageBilingual } from '../../../lib/original-language-labels'
 
@@ -80,7 +79,6 @@ export default function WordDetail() {
   const authors = getEntryAuthors(entry)
   const translators = getEntryTranslators(entry)
   const partOfSpeechValues = getPartOfSpeechValues(entry)
-  const pluralFormationValues = getPluralFormationValues(entry)
 
   return (
     <div className="word-detail">
@@ -105,12 +103,10 @@ export default function WordDetail() {
               <div className="value">{formatPartOfSpeechList(partOfSpeechValues, language, t)}</div>
             </div>
           )}
-          {pluralFormationValues.length > 0 && (
+          {entry.possessiveCompositionForm && (
             <div className="info-item">
-              <div className="label">{t('word.pluralFormation')}</div>
-              <div className="value">
-                {formatPluralFormationList(pluralFormationValues, language, t)}
-              </div>
+              <div className="label">{t('word.possessiveCompositionForm')}</div>
+              <div className="value">{labelPossessiveForm(entry.possessiveCompositionForm, language, t)}</div>
             </div>
           )}
           {authors.length > 0 && (
