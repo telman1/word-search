@@ -10,6 +10,7 @@
     "dev": "strapi develop",
     "develop": "strapi develop",
     "import:words": "node scripts/import-from-text.js ./data/full-import.txt french",
+    "backfill:phase": "node scripts/backfill-word-entries-phase.js",
     "start": "strapi start",
     "strapi": "strapi",
     "upgrade": "npx @strapi/upgrade latest",

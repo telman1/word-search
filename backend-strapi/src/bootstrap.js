@@ -1,65 +1,12 @@
 const path = require('path');
 const fs = require('fs');
+const { CANONICAL_TRANSLATOR } = require('../config/canonical-catalog');
 const {
-  CANONICAL_AUTHORS,
-  CANONICAL_BOOKS,
-  CANONICAL_TRANSLATOR,
-} = require('../config/canonical-catalog');
+  ensureCanonicalCatalog,
+  getPhaseWordEntryRelationIds,
+} = require('../config/ensure-canonical-catalog');
 
 const PDF_SEPARATORS = [' – ', ' - ', ' — ', ' –', '- ', '– ', '–'];
-
-async function findAuthorByArmenianName(nameArmenian) {
-  const rows = await strapi.entityService.findMany('api::author.author', {
-    filters: { nameArmenian: { $eq: nameArmenian } },
-    limit: 1,
-  });
-  return rows[0] || null;
-}
-
-async function ensureCanonicalCatalog() {
-  const authorByName = new Map();
-  for (const a of CANONICAL_AUTHORS) {
-    let row = await findAuthorByArmenianName(a.nameArmenian);
-    if (!row) {
-      row = await strapi.entityService.create('api::author.author', { data: { ...a } });
-      console.log('Canonical catalog: created author', a.nameArmenian);
-    }
-    authorByName.set(a.nameArmenian, row);
-  }
-
-  for (const b of CANONICAL_BOOKS) {
-    const author = authorByName.get(b.authorNameArmenian);
-    if (!author) {
-      console.warn('Canonical catalog: missing author for book', b.nameArmenian, b.authorNameArmenian);
-      continue;
-    }
-    const existing = await strapi.entityService.findMany('api::book.book', {
-      filters: { nameArmenian: { $eq: b.nameArmenian } },
-      limit: 1,
-    });
-    if (existing.length) continue;
-    await strapi.entityService.create('api::book.book', {
-      data: {
-        nameArmenian: b.nameArmenian,
-        nameOriginalLanguage: b.nameOriginalLanguage,
-        originalLanguageType: b.originalLanguageType,
-        author: author.id,
-      },
-    });
-    console.log('Canonical catalog: created book', b.nameArmenian);
-  }
-
-  let tr = await strapi.entityService.findMany('api::translator.translator', {
-    filters: { nameArmenian: { $eq: CANONICAL_TRANSLATOR.nameArmenian } },
-    limit: 1,
-  });
-  if (!tr.length) {
-    await strapi.entityService.create('api::translator.translator', {
-      data: { ...CANONICAL_TRANSLATOR },
-    });
-    console.log('Canonical catalog: created translator', CANONICAL_TRANSLATOR.nameArmenian);
-  }
-}
 
 module.exports = async () => {
   // Optional: Clear all data and import from PDF-style text file
@@ -79,19 +26,12 @@ module.exports = async () => {
       for (const t of translators) await strapi.entityService.delete('api::translator.translator', t.id);
       for (const a of authors) await strapi.entityService.delete('api::author.author', a.id);
       console.log('Cleared all data.');
+      await ensureCanonicalCatalog(strapi);
+      const phaseIds = await getPhaseWordEntryRelationIds(strapi);
       // Import from file
       if (fs.existsSync(importPath)) {
         const content = fs.readFileSync(importPath, 'utf-8');
         const lines = content.split('\n').map(l => l.trim()).filter(Boolean);
-        const author = await strapi.entityService.create('api::author.author', {
-          data: { nameArmenian: 'PDF Ներմուծում', nameOriginalLanguage: 'PDF Import', originalLanguageType: lang }
-        });
-        const book = await strapi.entityService.create('api::book.book', {
-          data: { nameArmenian: 'PDF Ներմուծում', nameOriginalLanguage: 'PDF Import', originalLanguageType: lang, author: author.id }
-        });
-        const translator = await strapi.entityService.create('api::translator.translator', {
-          data: { nameArmenian: 'PDF Ներմուծում', nameOriginalLanguage: 'PDF Import', originalLanguageType: lang }
-        });
         let count = 0;
         for (const line of lines) {
           let left = '', right = '';
@@ -109,15 +49,15 @@ module.exports = async () => {
                 wordUnitEasternArmenian: left,
                 wordUnitOriginalLanguage: right,
                 originalLanguageType: lang,
-                book: book.id,
-                translators: [translator.id],
-                authors: [author.id],
+                book: phaseIds.bookId,
+                translators: [phaseIds.translatorId],
+                authors: [phaseIds.authorId],
               },
             });
             count++;
           }
         }
-        console.log(`Imported ${count} entries from ${importPath}.`);
+        console.log(`Imported ${count} entries from ${importPath} (phase: Foucault / ${CANONICAL_TRANSLATOR.nameArmenian}).`);
       }
     } catch (err) {
       console.error('Clear/import error:', err);
@@ -153,7 +93,7 @@ module.exports = async () => {
     }
   }
 
-  await ensureCanonicalCatalog();
+  await ensureCanonicalCatalog(strapi);
 
   // Check if we already have word entries
   const wordEntryCount = await strapi.entityService.count('api::word-entry.word-entry');
@@ -165,21 +105,29 @@ module.exports = async () => {
 
   console.log('Bootstrapping sample data...');
 
-  const sampleBookRows = await strapi.entityService.findMany('api::book.book', {
-    filters: { nameArmenian: { $eq: 'Գիտելիքի հնագիտությունը' } },
-    limit: 1,
-    populate: { author: true },
-  });
-  const sampleTrRows = await strapi.entityService.findMany('api::translator.translator', {
-    filters: { nameArmenian: { $eq: CANONICAL_TRANSLATOR.nameArmenian } },
-    limit: 1,
-  });
-  const book = sampleBookRows[0];
-  const translator = sampleTrRows[0];
-  const author = book.author && typeof book.author === 'object' ? book.author : null;
-  const authorId = author?.id ?? book.author;
+  let book;
+  let translator;
+  let authorId;
+  try {
+    const ids = await getPhaseWordEntryRelationIds(strapi);
+    authorId = ids.authorId;
+    const bRows = await strapi.entityService.findMany('api::book.book', {
+      filters: { id: { $eq: ids.bookId } },
+      limit: 1,
+      populate: { author: true },
+    });
+    const tRows = await strapi.entityService.findMany('api::translator.translator', {
+      filters: { id: { $eq: ids.translatorId } },
+      limit: 1,
+    });
+    book = bRows[0];
+    translator = tRows[0];
+  } catch (e) {
+    console.error('Bootstrap: canonical book, author, or translator missing; cannot create sample word entries.', e);
+    return;
+  }
   if (!book || !translator || authorId == null) {
-    console.error('Bootstrap: canonical book, author, or translator missing; cannot create sample word entries.');
+    console.error('Bootstrap: phase relations incomplete; cannot create sample word entries.');
     return;
   }
 

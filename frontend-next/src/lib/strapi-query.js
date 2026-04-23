@@ -4,6 +4,8 @@
  * @see https://docs.strapi.io/dev-docs/api/rest/parameters
  */
 
+import { CURRENT_WORD_ENTRY_PHASE } from './phase-defaults'
+
 const WORD_ENTRY_POPULATE = {
   populate: {
     translators: true,
@@ -51,14 +53,22 @@ function stringifyStrapi(obj) {
  * @see https://docs.strapi.io/dev-docs/api/rest/populate-select
  */
 export function buildHomeWordSearchQuery(searchQuery) {
+  const p = CURRENT_WORD_ENTRY_PHASE
   return stringifyStrapi({
     filters: {
-      $or: [
-        { wordUnitEasternArmenian: { $containsi: searchQuery } },
-        { wordUnitWesternArmenian: { $containsi: searchQuery } },
-        { suggestedEquivalentArmenian: { $containsi: searchQuery } },
-        { wordUnitOriginalLanguage: { $containsi: searchQuery } },
-        { suggestedEquivalentOriginal: { $containsi: searchQuery } },
+      $and: [
+        {
+          $or: [
+            { wordUnitEasternArmenian: { $containsi: searchQuery } },
+            { wordUnitWesternArmenian: { $containsi: searchQuery } },
+            { suggestedEquivalentArmenian: { $containsi: searchQuery } },
+            { wordUnitOriginalLanguage: { $containsi: searchQuery } },
+            { suggestedEquivalentOriginal: { $containsi: searchQuery } },
+          ],
+        },
+        { book: { nameArmenian: { $eq: p.bookNameArmenian } } },
+        { authors: { nameArmenian: { $eq: p.authorNameArmenian } } },
+        { translators: { nameArmenian: { $eq: p.translatorNameArmenian } } },
       ],
     },
     ...WORD_ENTRY_POPULATE,
