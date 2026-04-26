@@ -1,11 +1,42 @@
 'use client'
 
-import { useState, useMemo } from 'react'
+import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../contexts/LanguageContext'
 import { buildEnhancedWordEntriesQuery } from '../../lib/strapi-query'
-import { getEntryAuthors, getEntryTranslators } from '../../lib/word-entry-display'
 import SearchInputWithKeyboard from '../../components/SearchInputWithKeyboard'
+
+const ENHANCED_SEARCH_STORAGE_KEY = 'word-search-mvp:enhanced-search-state'
+const ENHANCED_SEARCH_STATE_VERSION = 1
+
+const emptyForm = {
+  easternArmenian: '',
+  westernArmenian: '',
+  originalLanguageWord: '',
+  authorArmenian: '',
+  authorOriginal: '',
+  bookArmenian: '',
+  bookOriginal: '',
+  translatorArmenian: '',
+  translatorOriginal: '',
+}
+
+function readSessionState() {
+  if (typeof window === 'undefined') return null
+  try {
+    const raw = sessionStorage.getItem(ENHANCED_SEARCH_STORAGE_KEY)
+    if (!raw) return null
+    const p = JSON.parse(raw)
+    if (p.v !== ENHANCED_SEARCH_STATE_VERSION || !p.form || typeof p.form !== 'object') return null
+    return {
+      form: { ...emptyForm, ...p.form },
+      results: Array.isArray(p.results) ? p.results : [],
+      searched: Boolean(p.searched),
+    }
+  } catch {
+    return null
+  }
+}
 
 function armenianWordDisplay(entry) {
   const e = entry.wordUnitEasternArmenian || ''
@@ -16,25 +47,39 @@ function armenianWordDisplay(entry) {
 
 export default function EnhancedSearchPage() {
   const { t } = useLanguage()
-  const initial = useMemo(
-    () => ({
-      easternArmenian: '',
-      westernArmenian: '',
-      originalLanguageWord: '',
-      authorArmenian: '',
-      authorOriginal: '',
-      bookArmenian: '',
-      bookOriginal: '',
-      translatorArmenian: '',
-      translatorOriginal: '',
-    }),
-    []
-  )
-  const [form, setForm] = useState(initial)
+  const [form, setForm] = useState(() => ({ ...emptyForm }))
   const [results, setResults] = useState([])
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
+  const [sessionRestored, setSessionRestored] = useState(false)
+
+  useEffect(() => {
+    const stored = readSessionState()
+    if (stored) {
+      setForm(stored.form)
+      setResults(stored.results)
+      setSearched(stored.searched)
+    }
+    setSessionRestored(true)
+  }, [])
+
+  useEffect(() => {
+    if (!sessionRestored) return
+    try {
+      sessionStorage.setItem(
+        ENHANCED_SEARCH_STORAGE_KEY,
+        JSON.stringify({
+          v: ENHANCED_SEARCH_STATE_VERSION,
+          form,
+          results,
+          searched,
+        })
+      )
+    } catch (err) {
+      console.error('Could not persist enhanced search state', err)
+    }
+  }, [form, results, searched, sessionRestored])
 
   const setField = (key, value) => {
     setForm((f) => ({ ...f, [key]: value }))
@@ -197,7 +242,6 @@ export default function EnhancedSearchPage() {
                 <div className="original-word">{entry.wordUnitOriginalLanguage}</div>
                 <div className="armenian-word">{armenianWordDisplay(entry)}</div>
               </Link>
-              <EnhancedResultFields entry={entry} t={t} />
             </article>
           ))}
         </div>
@@ -207,122 +251,5 @@ export default function EnhancedSearchPage() {
         <div className="loading">{t('enhancedSearch.noHits')}</div>
       )}
     </div>
-  )
-}
-
-function EnhancedResultFields({ entry, t }) {
-  const authors = getEntryAuthors(entry)
-  const translators = getEntryTranslators(entry)
-  const rows = []
-
-  const w = armenianWordDisplay(entry)
-  if (w) {
-    rows.push({ key: 'r01', label: t('enhancedSearch.result01'), value: w })
-  }
-  if (entry.suggestedEquivalentArmenian) {
-    rows.push({
-      key: 'r04',
-      label: t('enhancedSearch.result04'),
-      value: entry.suggestedEquivalentArmenian,
-    })
-  }
-  if (entry.wordUnitOriginalLanguage) {
-    rows.push({
-      key: 'r05',
-      label: t('enhancedSearch.result05'),
-      value: entry.wordUnitOriginalLanguage,
-    })
-  }
-  if (entry.suggestedEquivalentOriginal) {
-    rows.push({
-      key: 'r06',
-      label: t('enhancedSearch.result06'),
-      value: entry.suggestedEquivalentOriginal,
-    })
-  }
-  if (entry.translatorCommentary) {
-    rows.push({
-      key: 'r07',
-      label: t('enhancedSearch.result07'),
-      value: entry.translatorCommentary,
-    })
-  }
-  if (entry.wordMeaningSense) {
-    rows.push({
-      key: 'r08',
-      label: t('enhancedSearch.result08'),
-      value: entry.wordMeaningSense,
-    })
-  }
-  if (entry.contextualPassageArmenian) {
-    rows.push({
-      key: 'r09',
-      label: t('enhancedSearch.result09'),
-      value: entry.contextualPassageArmenian,
-    })
-  }
-  if (entry.contextualPassageOriginal) {
-    rows.push({
-      key: 'r10',
-      label: t('enhancedSearch.result10'),
-      value: entry.contextualPassageOriginal,
-    })
-  }
-  const authorAm = authors.map((a) => a.nameArmenian).filter(Boolean).join('; ')
-  if (authorAm) {
-    rows.push({
-      key: 'r11',
-      label: t('enhancedSearch.result11'),
-      value: authorAm,
-    })
-  }
-  const authorOrig = authors.map((a) => a.nameOriginalLanguage).filter(Boolean).join('; ')
-  if (authorOrig) {
-    rows.push({
-      key: 'r12',
-      label: t('enhancedSearch.result12'),
-      value: authorOrig,
-    })
-  }
-  if (entry.book?.nameArmenian) {
-    rows.push({
-      key: 'r13',
-      label: t('enhancedSearch.result13'),
-      value: entry.book.nameArmenian,
-    })
-  }
-  if (entry.book?.nameOriginalLanguage) {
-    rows.push({
-      key: 'r14',
-      label: t('enhancedSearch.result14'),
-      value: entry.book.nameOriginalLanguage,
-    })
-  }
-  const translatorAm = translators.map((tr) => tr.nameArmenian).filter(Boolean).join('; ')
-  if (translatorAm) {
-    rows.push({
-      key: 'r15',
-      label: t('enhancedSearch.result15'),
-      value: translatorAm,
-    })
-  }
-  const trOrig = translators.map((tr) => tr.nameOriginalLanguage).filter(Boolean).join('; ')
-  if (trOrig) {
-    rows.push({
-      key: 'r16',
-      label: t('enhancedSearch.result16'),
-      value: trOrig,
-    })
-  }
-
-  return (
-    <dl className="enhanced-result-dl">
-      {rows.map((row) => (
-        <div key={row.key} className="enhanced-result-row">
-          <dt className="enhanced-result-dt">{row.label}</dt>
-          <dd className="enhanced-result-dd">{row.value}</dd>
-        </div>
-      ))}
-    </dl>
   )
 }

@@ -739,6 +739,20 @@ body::before {
       }
     }
   }
+
+  .word-detail-back {
+    background: none;
+    border: none;
+    color: #473d3d;
+    cursor: pointer;
+    font: inherit;
+    padding: 0;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
 }
 
 // Loading and error states
@@ -871,34 +885,6 @@ body::before {
     .enhanced-result-link {
       text-decoration: none;
       display: block;
-      margin-bottom: 0.75rem;
-    }
-
-    .enhanced-result-dl {
-      margin: 0;
-      padding-top: 0.75rem;
-      border-top: 1px solid #e2e8f0;
-      font-size: 0.9rem;
-    }
-
-    .enhanced-result-row {
-      margin-bottom: 0.65rem;
-
-      &:last-child {
-        margin-bottom: 0;
-      }
-    }
-
-    .enhanced-result-dt {
-      font-weight: 600;
-      color: #374151;
-      margin: 0 0 0.2rem;
-    }
-
-    .enhanced-result-dd {
-      margin: 0;
-      color: #475569;
-      white-space: pre-wrap;
     }
   }
 }

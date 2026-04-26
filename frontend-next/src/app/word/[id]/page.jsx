@@ -1,8 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { useParams } from 'next/navigation'
-import Link from 'next/link'
+import { useParams, useRouter } from 'next/navigation'
 import { useLanguage } from '../../../contexts/LanguageContext'
 import { buildWordEntryDetailQuery } from '../../../lib/strapi-query'
 import { formatPartOfSpeechList, formatPluralFormationList } from '../../../lib/word-entry-enum-labels'
@@ -23,6 +22,7 @@ function hasDisplayText(value) {
 export default function WordDetail() {
   const { t, language } = useLanguage()
   const params = useParams()
+  const router = useRouter()
   const [entry, setEntry] = useState(null)
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState('')
@@ -189,9 +189,13 @@ export default function WordDetail() {
       </div>
 
       <div style={{ marginTop: '2rem', textAlign: 'center' }}>
-        <Link href="/" style={{ color: '#473D3D', textDecoration: 'none' }}>
-          {t('common.backToSearch')}
-        </Link>
+        <button
+          type="button"
+          onClick={() => router.back()}
+          className="word-detail-back"
+        >
+          {t('common.back')}
+        </button>
       </div>
     </div>
   )
