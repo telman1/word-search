@@ -4,6 +4,10 @@
  * @see https://docs.strapi.io/dev-docs/api/rest/parameters
  */
 
+export const WORD_SEARCH_PAGE_SIZE = 30
+
+const STABLE_PAGINATION_SORT = { sort: ['id:asc'] }
+
 const WORD_ENTRY_POPULATE = {
   populate: {
     translators: true,
@@ -50,7 +54,13 @@ function stringifyStrapi(obj) {
  * Strapi 5 REST: nested objects for filters + populate.
  * @see https://docs.strapi.io/dev-docs/api/rest/populate-select
  */
-export function buildHomeWordSearchQuery(searchQuery) {
+/**
+ * @param {string} searchQuery
+ * @param {{ page: number, pageSize?: number }} [pagination]
+ */
+export function buildHomeWordSearchQuery(searchQuery, pagination) {
+  const pageSize = pagination?.pageSize ?? WORD_SEARCH_PAGE_SIZE
+  const page = Math.max(1, pagination?.page ?? 1)
   return stringifyStrapi({
     filters: {
       $or: [
@@ -59,8 +69,14 @@ export function buildHomeWordSearchQuery(searchQuery) {
         { suggestedEquivalentArmenian: { $containsi: searchQuery } },
         { wordUnitOriginalLanguage: { $containsi: searchQuery } },
         { suggestedEquivalentOriginal: { $containsi: searchQuery } },
+        { translatorCommentary: { $containsi: searchQuery } },
+        { wordMeaningSense: { $containsi: searchQuery } },
+        { contextualPassageArmenian: { $containsi: searchQuery } },
+        { contextualPassageOriginal: { $containsi: searchQuery } },
       ],
     },
+    ...STABLE_PAGINATION_SORT,
+    pagination: { page, pageSize },
     ...WORD_ENTRY_POPULATE,
   })
 }
@@ -82,7 +98,21 @@ export function buildWordEntryDetailQuery() {
  *   translatorOriginal: string,
  * }} values
  */
-export function buildEnhancedWordEntriesQuery(values) {
+/**
+ * @param {{
+ *   easternArmenian: string,
+ *   westernArmenian: string,
+ *   originalLanguageWord: string,
+ *   authorArmenian: string,
+ *   authorOriginal: string,
+ *   bookArmenian: string,
+ *   bookOriginal: string,
+ *   translatorArmenian: string,
+ *   translatorOriginal: string,
+ * }} values
+ * @param {{ page: number, pageSize?: number }} [pagination]
+ */
+export function buildEnhancedWordEntriesQuery(values, pagination) {
   const ea = values.easternArmenian.trim()
   const wa = values.westernArmenian.trim()
   const orig = values.originalLanguageWord.trim()
@@ -119,8 +149,13 @@ export function buildEnhancedWordEntriesQuery(values) {
     filters.translators = translatorFilters
   }
 
+  const pageSize = pagination?.pageSize ?? WORD_SEARCH_PAGE_SIZE
+  const page = Math.max(1, pagination?.page ?? 1)
+
   return stringifyStrapi({
     filters,
+    ...STABLE_PAGINATION_SORT,
+    pagination: { page, pageSize },
     ...WORD_ENTRY_POPULATE,
   })
 }

@@ -13,7 +13,13 @@
     "openArmenianKeyboard": "Open Armenian keyboard",
     "armenianKeyboardTitle": "Armenian keyboard",
     "keyboardSpace": "Space",
-    "dismissKeyboard": "Close keyboard"
+    "dismissKeyboard": "Close keyboard",
+    "showingCount": "Showing {from}–{to} of {total}",
+    "pageIndicator": "Page {current} of {total}",
+    "prevPage": "Previous",
+    "nextPage": "Next",
+    "paginationNav": "Result pages",
+    "goToPage": "Go to page {n}"
   },
   "home": {
     "title": "Electronic Dictionary",

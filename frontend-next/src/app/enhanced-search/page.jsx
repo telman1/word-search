@@ -3,11 +3,12 @@
 import { useState, useEffect } from 'react'
 import Link from 'next/link'
 import { useLanguage } from '../../contexts/LanguageContext'
-import { buildEnhancedWordEntriesQuery } from '../../lib/strapi-query'
+import { buildEnhancedWordEntriesQuery, WORD_SEARCH_PAGE_SIZE } from '../../lib/strapi-query'
 import SearchInputWithKeyboard from '../../components/SearchInputWithKeyboard'
+import SearchPagination from '../../components/SearchPagination'
 
 const ENHANCED_SEARCH_STORAGE_KEY = 'word-search-mvp:enhanced-search-state'
-const ENHANCED_SEARCH_STATE_VERSION = 1
+const ENHANCED_SEARCH_STATE_VERSION = 2
 
 const emptyForm = {
   easternArmenian: '',
@@ -32,6 +33,9 @@ function readSessionState() {
       form: { ...emptyForm, ...p.form },
       results: Array.isArray(p.results) ? p.results : [],
       searched: Boolean(p.searched),
+      page: typeof p.page === 'number' && p.page > 0 ? p.page : 1,
+      pageCount: typeof p.pageCount === 'number' && p.pageCount > 0 ? p.pageCount : 1,
+      total: typeof p.total === 'number' && p.total >= 0 ? p.total : 0,
     }
   } catch {
     return null
@@ -53,6 +57,9 @@ export default function EnhancedSearchPage() {
   const [error, setError] = useState('')
   const [searched, setSearched] = useState(false)
   const [sessionRestored, setSessionRestored] = useState(false)
+  const [page, setPage] = useState(1)
+  const [pageCount, setPageCount] = useState(1)
+  const [total, setTotal] = useState(0)
 
   useEffect(() => {
     const stored = readSessionState()
@@ -60,6 +67,9 @@ export default function EnhancedSearchPage() {
       setForm(stored.form)
       setResults(stored.results)
       setSearched(stored.searched)
+      setPage(stored.page ?? 1)
+      setPageCount(stored.pageCount ?? 1)
+      setTotal(stored.total ?? 0)
     }
     setSessionRestored(true)
   }, [])
@@ -74,26 +84,26 @@ export default function EnhancedSearchPage() {
           form,
           results,
           searched,
+          page,
+          pageCount,
+          total,
         })
       )
     } catch (err) {
       console.error('Could not persist enhanced search state', err)
     }
-  }, [form, results, searched, sessionRestored])
+  }, [form, results, searched, page, pageCount, total, sessionRestored])
 
   const setField = (key, value) => {
     setForm((f) => ({ ...f, [key]: value }))
   }
 
-  const handleSubmit = async (e) => {
-    e.preventDefault()
+  const runQuery = async (pageNum) => {
     setError('')
-
     setLoading(true)
-    setResults([])
     try {
       const apiBase = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:1337'
-      const qs = buildEnhancedWordEntriesQuery(form)
+      const qs = buildEnhancedWordEntriesQuery(form, { page: pageNum, pageSize: WORD_SEARCH_PAGE_SIZE })
       const url = `${apiBase}/api/word-entries?${qs}`
       const response = await fetch(url)
       if (!response.ok) {
@@ -101,6 +111,15 @@ export default function EnhancedSearchPage() {
       }
       const data = await response.json()
       setResults(data.data || [])
+      const p = data.meta?.pagination
+      if (p) {
+        setPage(p.page ?? pageNum)
+        setPageCount(p.pageCount ?? 1)
+        setTotal(p.total ?? 0)
+      } else {
+        setPageCount(1)
+        setTotal(0)
+      }
       setSearched(true)
     } catch (err) {
       console.error(err)
@@ -108,6 +127,20 @@ export default function EnhancedSearchPage() {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleSubmit = async (e) => {
+    e.preventDefault()
+    setPage(1)
+    setResults([])
+    setPageCount(1)
+    setTotal(0)
+    await runQuery(1)
+  }
+
+  const handlePageChange = (nextPage) => {
+    setPage(nextPage)
+    runQuery(nextPage)
   }
 
   return (
@@ -234,8 +267,17 @@ export default function EnhancedSearchPage() {
 
       {loading && <div className="loading">{t('common.searching')}</div>}
 
-      {!loading && results.length > 0 && (
-        <div className="results-container enhanced-results">
+      {searched && total > 0 && results.length > 0 && !loading && (
+        <div className="search-result-summary">
+          {t('common.showingCount')
+            .replace('{from}', String((page - 1) * WORD_SEARCH_PAGE_SIZE + 1))
+            .replace('{to}', String((page - 1) * WORD_SEARCH_PAGE_SIZE + results.length))
+            .replace('{total}', String(total))}
+        </div>
+      )}
+
+      {results.length > 0 && (
+        <div className={`results-container enhanced-results${loading ? ' enhanced-results--updating' : ''}`}>
           {results.map((entry) => (
             <article key={entry.documentId || entry.id} className="result-item enhanced-result-card">
               <Link href={`/word/${entry.documentId || entry.id}`} className="enhanced-result-link">
@@ -245,6 +287,16 @@ export default function EnhancedSearchPage() {
             </article>
           ))}
         </div>
+      )}
+
+      {searched && !error && !loading && pageCount > 1 && (
+        <SearchPagination
+          page={page}
+          pageCount={pageCount}
+          onPageChange={handlePageChange}
+          t={t}
+          disabled={loading}
+        />
       )}
 
       {!loading && searched && results.length === 0 && (

@@ -13,7 +13,13 @@
     "openArmenianKeyboard": "Բացել հայերեն ստեղնաշար",
     "armenianKeyboardTitle": "Հայերեն ստեղնաշար",
     "keyboardSpace": "Բացատ",
-    "dismissKeyboard": "Փակել ստեղնաշարը"
+    "dismissKeyboard": "Փակել ստեղնաշարը",
+    "showingCount": "Ցուցադրվում է {from}–{to}՝ {total}-ից",
+    "pageIndicator": "Էջ {current}․ {total}-ից",
+    "prevPage": "Նախորդ",
+    "nextPage": "Հաջորդ",
+    "paginationNav": "Էջեր",
+    "goToPage": "Անցնել {n} էջ"
   },
   "home": {
     "title": "Էլեկտրոնային բառարան",
